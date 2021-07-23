@@ -519,11 +519,6 @@ button.vendor-follow:hover {
   max-width: 58px;
 }
 
-.single-vendor .impact-icon-txt-wrap .pd-impact-img {
-  max-width: 65px;
-  width: 65px;
-}
-
 @media (max-width: 992px) {
   .single_vendor.vendor-list-products-section .vendor-products-section {
     width: 47.3% !important;
