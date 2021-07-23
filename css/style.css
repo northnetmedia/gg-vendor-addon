@@ -256,6 +256,11 @@
   display: inline-block;
   padding-right: 20px;
 }
+
+.single-vendor .impact-icon-txt-wrap .pd-impact-img {
+  max-width: 65px;
+  width: 65px;
+}
 @media (max-width: 1024px) {
   .vendors-list .product-content h4 a {
     font-size: 26px;
