@@ -1,0 +1,245 @@
+.fb-like p { margin: 0 7px; font-size: 14px; }
+.fb-like { position: absolute; right: 10px; bottom: 10px; z-index: 9; }
+.fb-like button { background: transparent !important; border: 0 !important; font-size: 30px !important; }
+
+.vendor-details button { padding: 10px 40px; font-size: 16px; text-transform: uppercase; }
+.vendor-name { font-family: 'Gordita'; font-size: 14px; font-weight: 500; color: #B2B2B2; display: block; margin: 30px 0 0px; }
+
+
+.vendors-list .product-content h4 { font-size: 20px !important; font-weight: 900 !important; margin-bottom: 15px; }
+.vendors-list .product-content p { font-size: 16px; line-height: initial !important; margin-bottom: 0; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 3; /* number of lines to show */ -webkit-box-orient: vertical; }
+.vendors-list .product-content { padding-bottom: 90px; }
+.vendors-list .product-content:last-child { padding: 0; }
+.vendors-list .product-content .col-sm-4 { margin-bottom: 40px; }
+.vendors-list .product-content h4 a:hover { color: #E88376; }
+.vendors-list .product-content a.vendorLink { background: #153045; font-size: 12px; display: inline-block; padding: 5px 20px; border-radius: 20px; color: #fff; }
+.vendors-list .product-content a.vendorLink:hover { background: #E88376; }
+/* .vendorBanner { background-image: url(/wp-content/uploads/2020/07/istockphoto-1047601114-1024x1024-1.png); background-position: center; background-size: cover; padding: 150px 0; }
+.vendorBanner h2 { color: #fff; font-size: 40px; font-weight: 700; margin: 0; position: relative; } */
+.vendorBanner {  padding: 40px 0 0 0; }
+/* .vendor-list-products-section { padding: 100px 0; } */
+.vendor-list-products-section .vendorProduct_wrap { margin-bottom: 30px; }
+.vendor-list-products-section .vendorProduct_wrap .vendor-fb-like { position: absolute; top: 0; left: 0; padding: 10px; }
+.vendor-list-products-section .vendorProduct_wrap { position: relative; text-align: center; }
+.vendor-list-products-section .vendorProduct_wrap a.shop-product-title { line-height: 1.2; display: block; min-height: 48px; }
+.vendor-list-products-section .vendorProduct_wrap .vendor-fb-like .product-like, .vendorProduct_wrap .vendor-fb-like p { display: inline-block; vertical-align: top; }
+.vendor-list-products-section .vendorProduct_wrap .vendor-fb-like p { margin: 5px; font-weight: 700; color: #000 !important; }
+.vendor-list-products-section .vendorProduct_wrap img { width: 100%; box-shadow: 0 1px 0 0 rgba(139, 141, 158, 0.05), 0 5px 10px 0 rgba(65, 71, 107, 0.15);}
+.vendor-list-products-section .vendorBanner { position: relative; }
+.vendor-list-products-section .vendorBanner:before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 100%; background: rgb(0 0 0 / 35%); }
+.vendor-products-section { padding: 0 15px; }
+.single_vendor.vendor-list-products-section .vendor-products-section { padding: 0 15px; margin-right: 30px; display: inline-block; box-shadow: 0 1px 0 0 rgb(139 141 158 / 5%), 0 5px 10px 0 rgb(65 71 107 / 15%); margin-bottom: 20px !important; border: 1px solid #eee; width: 300px; vertical-align: top; position: relative;}
+.vendor-products-section img { height: 300px; object-fit: contain; object-position: center; background: white}
+.vendor-list-section .owl-stage { display: flex; align-items: center; }
+.vendor-list-section .vendor-slide-section { margin: 0px 20px; }
+
+.meet_vendors{
+	margin: 100px 0;
+}
+.vendor-detail-slide-section{
+	display: flex;text-align: center;  
+	align-items: center;  
+	background-color: #abacb2;
+    padding: 30px 0;
+    position: relative; 
+	margin: 100px 0;
+}
+.vendor-detail-slide-section:before{
+	content: '';
+	position: absolute;
+	top: -10%;
+	bottom: -10%;
+	left: 0;
+	right: 0;
+	background-image: url(img/vendor-bg.png);
+	background-repeat: no-repeat;
+	background-size: cover; 
+	height: 100%;
+	width: 100%;
+	z-index: -1
+}
+.vendor-first-col{
+	width: 30%;
+	padding:0 30px;
+}
+.vendor-second-col{
+	width: 40%;padding:0 30px;
+}
+.vendor-second-col a , .vendor-follow{
+    display: inline-block;
+    background-color: #465362;
+    color: #fff;
+    width: max-content;
+    margin: auto;
+    padding: 10px 15px;
+}
+.vendor-detail-slide-section p{
+	color: #ffffff;
+}
+.vendor-third-col{
+	width: 30%;padding:0 30px;
+}
+.vendor-third-col img{
+    height: 400px;
+    width: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+.vendorfollow, .vendorhighfive { display: inline-block; padding-right: 20px; }
+@media (max-width:1024px) {
+	.vendors-list .product-content h4 a { font-size: 26px; }
+	.vendors-list .product-content .col-sm-4 { margin-bottom: 25px; }
+	.vendors-list .product-content { padding-bottom: 60px; }
+	.vendorProduct_wrap a.shop-product-title { min-height: initial; }
+	.vendor-list-products-section { padding: 50px 0 0; }
+}
+@media (max-width:767px) {
+
+	.vendorBanner h2 { font-size: 36px; }
+}
+
+button.vendor-like, button.vendor-follow {color: #999 !important; background:none !important;font-weight:normal  !important;}
+button.vendor-like:hover, button.vendor-follow:hover {color: #5A9694  !important;}
+.vendor-list-products-section .yith-wcwl-icon { height: 32px; background: none; }
+.vendor-list-products-section  .yith-wcwl-add-button a span { display: none; }
+.vendor-list-products-section .yith-wcwl-add-to-wishlist { top: 0; margin-top: 10px; position: absolute; z-index: 99; right: 10px; }
+.profileleft { display: inline-block; vertical-align: top; margin-right: 20px;width: 42%; text-align: center; }
+.profileright {     display: inline-block; vertical-align: top;  width: 55%;}
+.carousel .carouselleft { display: inline-block; vertical-align: top; margin-right: 20px; width: 37%; }
+.carousel .carouselright {     display: inline-block; vertical-align: top; text-align: center; width: 60%;}
+.vendortop { background-image: url("/wp-content/uploads/2021/02/light-grn-paint-bkg-1024x337-1.png");
+	background-position: center center;
+	background-repeat: no-repeat; padding: 50px;  }
+.vendor_spotlight {
+    background-image: url(/wp-content/uploads/2021/02/header-shop-page.jpg);
+    background-position: bottom center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+.vendor_spotlight .background-overlay {
+background-color: #5C939100;
+    background-image: url(/wp-content/uploads/2021/02/header-paintstroke.png);
+    background-position: bottom center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    opacity: 1;
+    transition: background 0.3s, border-radius 0.3s, opacity 0.3s;
+}
+.vendor_spotlight h1 { color: #fff; padding-top: 10%; }
+.vendor_spotlight h2 { color: #fff; font-weight: 300 !important; }
+.cateogrypolaroid {
+    background: #ffffff;
+    display: inline-block;
+    padding: 10px 10px 5px;
+    text-align: center;
+    text-decoration: none;
+    -webkit-box-shadow: 0 4px 6px rgba(0, 0, 0, .3);
+    -moz-box-shadow: 0 4px 6px rgba(0, 0, 0, .3);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, .3);
+    -webkit-transition: all .20s linear;
+    -moz-transition: all .20s linear;
+    transition: all .20s linear;
+    z-index: 0;
+    position: relative;
+	width: 30%;
+	margin-right: 2%;
+	margin-bottom: 2%;
+}
+.category h3.cattitle a, .impacttitle, .vendor_mission { font-family: "Shadows Into Light", Sans-serif; font-size: 26px; }
+.category { padding: 15px 1px 15px 0px; }
+.category h3 { 0 0 0.625rem; }
+.vendorcategories { margin-bottom: 40px; }
+.learnaboutimpact { text-align: center; margin: 60px 0 60px 0; position: relative; }
+.learnaboutimpact h2:before{
+    position: absolute;
+    top: 5%;
+    overflow: hidden;
+    width: 34%;
+    height: 1px;
+    content: '\a0';
+    background-color: #ddd;
+    left: 0%;
+}
+.learnaboutimpact h2:after {
+    position: absolute;
+    top: 5%;
+    overflow: hidden;
+    width: 34%;
+    height: 1px;
+    content: '\a0';
+    background-color: #ddd;
+    right: 0%;
+}
+.impacticon img { max-width: 150px; margin: 15px 0; }
+.impacttitle { margin: 15px 0; }
+.impactstate { margin: 15px 0; }
+.impactshop { margin: 15px 0; }
+.profileimg img { border-radius: 100%;}
+.vendor_mission { font-family: "Shadows Into Light", Sans-serif !important; font-size: 34px !important;  color: #5A9694  !important; line-height: 40px !important; font-weight: 500 !important;}
+.carousel { margin: 40px 0 60px 0; }
+@media (max-width:767px){
+    .learnaboutimpact h2:before, .learnaboutimpact h2:after { display: none; }
+    .vendor_spotlight h1 { padding-top: 35%; }
+	.carousel .carouselleft, .carousel .carouselright, .cateogrypolaroid, .profileleft, .profileright { width: 100%; }
+}
+
+@media (max-width:1024px) and (min-width: 768px) { 
+    .cateogrypolaroid { width: 46% !important; } 
+    .carousel .carouselleft, .carousel .carouselright, .cateogrypolaroid, .profileleft, .profileright { width: 100%; } 
+}
+/* our vendors page */
+.our_vendors {
+    background-image: url(/wp-content/uploads/2021/02/header-shop-page.jpg);
+    background-position: bottom center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+.our_vendors .background-overlay {
+background-color: #5C939100;
+    background-image: url(/wp-content/uploads/2021/02/header-paintstroke.png);
+    background-position: bottom center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    opacity: 1;
+    transition: background 0.3s, border-radius 0.3s, opacity 0.3s;
+}
+.our_vendors h1 { color: #fff; padding-top: 8%; }
+.our_vendors h2 { color: #fff; font-weight: 300 !important; }
+.aboutourvendors div { width: 30%; display: inline-block; margin-right: 1%; padding: 20px; vertical-align:top; }
+.aboutvendorssection { text-align: center ; position: relative;}
+.aboutvendorssection h3:before{
+    position: absolute;
+    top: 5%;
+    overflow: hidden;
+    width: 30%;
+    height: 1px;
+    content: '\a0';
+    background-color: #ddd;
+    left: 0%;
+}
+.aboutvendorssection h3:after {
+    position: absolute;
+    top: 5%;
+    overflow: hidden;
+    width: 30%;
+    height: 1px;
+    content: '\a0';
+    background-color: #ddd;
+    right: 0%;
+}
+.aboutourvendors img { max-width: 120px; }
+.filterform { text-align: center; border-top: 1px solid #ddd; border-bottom: 1px solid #ddd; padding: 20px 0px; margin-bottom: 20px;}
+.filterform div { display: inline-block; padding-right: 20px; }
+.filterform select { margin-right: 20px; }
+.threecol .col-sm-3 { width: 30%; }
+@media (max-width:767px){
+	.aboutourvendors div, .threecol .col-sm-3  { width: 100% !important; }
+    .filterform select, .filterform div { display: block; margin: 20px 0px;  }
+    .aboutvendorssection h3:before, .aboutvendorssection h3:after { display: none; }
+    .our_vendors h1 {  padding-top: 28%; }
+}
+@media (max-width:1024px) and (min-width: 768px){
+	.threecol .col-sm-3  { width: 50%; }
+    .our_vendors h1 {  padding-top: 18%; }
+    .aboutvendorssection h3:before, .aboutvendorssection h3:after { width: 20%; }
+}
