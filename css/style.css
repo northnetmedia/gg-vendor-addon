@@ -800,7 +800,7 @@ button.vendor-follow:hover {
   color: #ffffff;
   font-weight: normal;
   display: block;
-  margin-bottom: 20px;
+  margin-bottom: 19px;
 }
 
 .learn-more-impact .impact-wrap {
@@ -810,7 +810,6 @@ button.vendor-follow:hover {
 }
 
 .learn-a {
-  background-color: ;
   color: #ffffff;
   border: none !important;
   border-radius: 10px;
