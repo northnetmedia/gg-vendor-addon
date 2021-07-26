@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <?php
 
 
@@ -134,4 +135,281 @@ function add_vendor_followers()
 
 
 
+=======
+<<<<<<< HEAD
+<?php
+
+
+/**
+ * Register a Vendors Post Type. 
+ */
+
+function vendor_init() {
+    $labels = array(
+        'name'               => _x( 'Vendors', 'post type general name', 'your-plugin-textdomain' ),
+        'singular_name'      => _x( 'Vendor', 'post type singular name', 'your-plugin-textdomain' ),
+        'menu_name'          => _x( 'Vendors', 'admin menu', 'your-plugin-textdomain' ),
+        'name_admin_bar'     => _x( 'Vendor', 'add new on admin bar', 'your-plugin-textdomain' ),
+        'add_new'            => _x( 'Add New', 'Vendor', 'your-plugin-textdomain' ),
+        'add_new_item'       => __( 'Add New Vendor', 'your-plugin-textdomain' ),
+        'new_item'           => __( 'New Vendor', 'your-plugin-textdomain' ),
+        'edit_item'          => __( 'Edit Vendor', 'your-plugin-textdomain' ),
+        'view_item'          => __( 'View Vendor', 'your-plugin-textdomain' ),
+        'all_items'          => __( 'All Vendors', 'your-plugin-textdomain' ),
+        'search_items'       => __( 'Search Vendors', 'your-plugin-textdomain' ),
+        'parent_item_colon'  => __( 'Parent Vendors:', 'your-plugin-textdomain' ),
+        'not_found'          => __( 'No vendors found.', 'your-plugin-textdomain' ),
+        'not_found_in_trash' => __( 'No vendors found in Trash.', 'your-plugin-textdomain' )
+    );
+
+    $args = array(
+        'labels'             => $labels,
+        'description'        => __( 'Description.', 'your-plugin-textdomain' ),
+        'public'             => true,
+        'publicly_queryable' => true,
+        'show_ui'            => true,
+        'show_in_menu'       => true,
+        'query_var'          => true,
+        'rewrite'            => array( 'slug' => 'vendor' ),
+        'capability_type'    => 'post',
+        'has_archive'        => true,
+        'hierarchical'       => false,
+        'menu_icon'         => 'dashicons-groups',
+        'menu_position'      => null,
+        'supports'           => array( 'title', 'editor', 'author', 'thumbnail', 'excerpt', 'comments' )
+    );
+
+    register_post_type( 'vendor', $args );
+}
+
+
+
+/**
+ * Callback Vendors list
+ */
+function show_vendors_list_in_product($post){
+     
+    $vendor_name = get_post_meta($post->ID, 'vendor_name' , true );
+    //echo 'vendor'.$vendor_name;
+
+     //Vendor Lists
+     $dropdown_args = array(
+        'post_type'        => 'vendor',
+        'posts_per_page'   => -1,
+     );
+     $loop = get_posts($dropdown_args);
+
+
+     // Use nonce for verification
+     wp_nonce_field( 'vendor_product_info_meta_box_nonce', 'vendor_product_info_meta_box_nonce' );
+
+    echo '<p><label><b>Select the Vendor :</b></label></p>';
+    echo '<select name="vendor_name" id="vendor_list">';
+            if(!empty($loop)) {
+                echo '<option value="0">---Choose---</option>';
+                foreach ($loop as $value) 
+                {   
+                    $selected = '';
+                    $vendor_id = $value->ID;
+                    if($vendor_name == $vendor_id){
+                        $selected = 'selected';
+                    }
+                    echo '<option value="'.$vendor_id.'" '.$selected.'>'.$value->post_title.'</option>';    
+                }
+            }
+    echo '</select>';
+}
+
+
+
+/**
+ * Saving Metaboxes For Vendors list
+ */
+add_action( 'save_post', function($post_id) {
+
+    if ( ! isset( $_POST['vendor_product_info_meta_box_nonce'] ) ||
+    ! wp_verify_nonce( $_POST['vendor_product_info_meta_box_nonce'], 'vendor_product_info_meta_box_nonce' ) )
+        return;
+        
+    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE)
+        return;
+    
+    if (!current_user_can('edit_post', $post_id))
+        return;
+
+    if(!empty($_POST['vendor_name'])){
+        $data=$_POST['vendor_name']; //make sanitization more strict !!
+        update_post_meta($post_id, 'vendor_name', $data );
+    }
+    else{
+        update_post_meta($post_id, 'vendor_name', '' );
+    }        
+});
+
+
+
+
+/**
+* Ajax Call Vendor Followers
+*/
+function add_vendor_followers()
+{
+    // $ppp = (isset($_POST["ppp"])) ? $_POST["ppp"] : 3;
+    $followers = (isset($_POST['vendor_followers'])) ? $_POST['vendor_followers'] : '';
+    $vendor_id = (isset($_POST['vendor'])) ? $_POST['vendor'] : '';
+
+    header("Content-Type: text/html");
+
+    $vendor_followers = update_post_meta($vendor_id, 'vendor_followers' , $followers );
+    $vendor_total_followers = get_post_meta($vendor_id, 'vendor_followers' , true );
+    $out = ''; ?>
+        <p><?php echo $vendor_total_followers; ?><span> Followers</span></p>
+
+    <?php
+    die($out);
+}
+
+
+
+
+
+=======
+<?php
+
+
+/**
+ * Register a Vendors Post Type. 
+ */
+
+function vendor_init() {
+    $labels = array(
+        'name'               => _x( 'Vendors', 'post type general name', 'your-plugin-textdomain' ),
+        'singular_name'      => _x( 'Vendor', 'post type singular name', 'your-plugin-textdomain' ),
+        'menu_name'          => _x( 'Vendors', 'admin menu', 'your-plugin-textdomain' ),
+        'name_admin_bar'     => _x( 'Vendor', 'add new on admin bar', 'your-plugin-textdomain' ),
+        'add_new'            => _x( 'Add New', 'Vendor', 'your-plugin-textdomain' ),
+        'add_new_item'       => __( 'Add New Vendor', 'your-plugin-textdomain' ),
+        'new_item'           => __( 'New Vendor', 'your-plugin-textdomain' ),
+        'edit_item'          => __( 'Edit Vendor', 'your-plugin-textdomain' ),
+        'view_item'          => __( 'View Vendor', 'your-plugin-textdomain' ),
+        'all_items'          => __( 'All Vendors', 'your-plugin-textdomain' ),
+        'search_items'       => __( 'Search Vendors', 'your-plugin-textdomain' ),
+        'parent_item_colon'  => __( 'Parent Vendors:', 'your-plugin-textdomain' ),
+        'not_found'          => __( 'No vendors found.', 'your-plugin-textdomain' ),
+        'not_found_in_trash' => __( 'No vendors found in Trash.', 'your-plugin-textdomain' )
+    );
+
+    $args = array(
+        'labels'             => $labels,
+        'description'        => __( 'Description.', 'your-plugin-textdomain' ),
+        'public'             => true,
+        'publicly_queryable' => true,
+        'show_ui'            => true,
+        'show_in_menu'       => true,
+        'query_var'          => true,
+        'rewrite'            => array( 'slug' => 'vendor' ),
+        'capability_type'    => 'post',
+        'has_archive'        => true,
+        'hierarchical'       => false,
+        'menu_icon'         => 'dashicons-groups',
+        'menu_position'      => null,
+        'supports'           => array( 'title', 'editor', 'author', 'thumbnail', 'excerpt', 'comments' )
+    );
+
+    register_post_type( 'vendor', $args );
+}
+
+
+
+/**
+ * Callback Vendors list
+ */
+function show_vendors_list_in_product($post){
+     
+    $vendor_name = get_post_meta($post->ID, 'vendor_name' , true );
+    //echo 'vendor'.$vendor_name;
+
+     //Vendor Lists
+     $dropdown_args = array(
+        'post_type'        => 'vendor',
+        'posts_per_page'   => -1,
+     );
+     $loop = get_posts($dropdown_args);
+
+
+     // Use nonce for verification
+     wp_nonce_field( 'vendor_product_info_meta_box_nonce', 'vendor_product_info_meta_box_nonce' );
+
+    echo '<p><label><b>Select the Vendor :</b></label></p>';
+    echo '<select name="vendor_name" id="vendor_list">';
+            if(!empty($loop)) {
+                echo '<option value="0">---Choose---</option>';
+                foreach ($loop as $value) 
+                {   
+                    $selected = '';
+                    $vendor_id = $value->ID;
+                    if($vendor_name == $vendor_id){
+                        $selected = 'selected';
+                    }
+                    echo '<option value="'.$vendor_id.'" '.$selected.'>'.$value->post_title.'</option>';    
+                }
+            }
+    echo '</select>';
+}
+
+
+
+/**
+ * Saving Metaboxes For Vendors list
+ */
+add_action( 'save_post', function($post_id) {
+
+    if ( ! isset( $_POST['vendor_product_info_meta_box_nonce'] ) ||
+    ! wp_verify_nonce( $_POST['vendor_product_info_meta_box_nonce'], 'vendor_product_info_meta_box_nonce' ) )
+        return;
+        
+    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE)
+        return;
+    
+    if (!current_user_can('edit_post', $post_id))
+        return;
+
+    if(!empty($_POST['vendor_name'])){
+        $data=$_POST['vendor_name']; //make sanitization more strict !!
+        update_post_meta($post_id, 'vendor_name', $data );
+    }
+    else{
+        update_post_meta($post_id, 'vendor_name', '' );
+    }        
+});
+
+
+
+
+/**
+* Ajax Call Vendor Followers
+*/
+function add_vendor_followers()
+{
+    // $ppp = (isset($_POST["ppp"])) ? $_POST["ppp"] : 3;
+    $followers = (isset($_POST['vendor_followers'])) ? $_POST['vendor_followers'] : '';
+    $vendor_id = (isset($_POST['vendor'])) ? $_POST['vendor'] : '';
+
+    header("Content-Type: text/html");
+
+    $vendor_followers = update_post_meta($vendor_id, 'vendor_followers' , $followers );
+    $vendor_total_followers = get_post_meta($vendor_id, 'vendor_followers' , true );
+    $out = ''; ?>
+        <p><?php echo $vendor_total_followers; ?><span> Followers</span></p>
+
+    <?php
+    die($out);
+}
+
+
+
+
+
+>>>>>>> b7d2a5e0b20a061712f60876241d65e2337009ef
+>>>>>>> db0c04c485b21b4a3a28ccdf0f55ac476237dffe
 ?>

@@ -418,6 +418,7 @@ function display_custom_meta_box_vendor_details_save( $post_id) {
     if ( get_post_type( $post_id ) != 'vendor' ) return;
     if (isset( $_POST[ '_inline_edit' ]))   return;
     /*if (check_admin_referer('bulk-posts'))   return; */
+<<<<<<< HEAD
     if (isset($_POST['v_website_url'])) { update_post_meta( $post_id, 'v_website_url', $_POST['v_website_url'] ); }
     if (isset($_POST['v_video_url'])) { update_post_meta( $post_id, 'v_video_url', $_POST['v_video_url'] ); }
     if (isset($_POST['v_mission'])) { update_post_meta( $post_id, 'v_mission', $_POST['v_mission'] ); }
@@ -444,5 +445,17 @@ function display_custom_meta_box_vendor_details_save( $post_id) {
     } else {
         wp_update_term( $termid, 'pa_vendors', $args);
     }
+=======
+    update_post_meta( $post_id, 'v_website_url', $_POST['v_website_url'] );
+    update_post_meta( $post_id, 'v_video_url', $_POST['v_video_url'] );
+    update_post_meta( $post_id, 'v_mission', $_POST['v_mission'] );
+    update_post_meta( $post_id, 'v_profile_pic', $_POST['upload_image_id'] );
+    update_post_meta( $post_id, 'v_vendor_details', $_POST['v_vendor_details'] );
+    update_post_meta( $post_id, 'v_logo', $_POST['upload_logo_id'] );
+    update_post_meta( $post_id, 'v_header_image', $_POST['upload_header_id'] );
+    update_post_meta( $post_id, 'v_secondary_title', $_POST['v_secondary_title'] );
+    update_post_meta( $post_id, 'v_main_title', $_POST['v_main_title'] );
+    
+>>>>>>> db0c04c485b21b4a3a28ccdf0f55ac476237dffe
 }
 ?>

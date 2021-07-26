@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <?php
 
 
@@ -195,4 +196,403 @@ function add_vendor_likes()
     }
 }
 
+=======
+<<<<<<< HEAD
+<?php
+
+
+add_action( 'init', 'badgeos_vendorlikes_load_triggers');
+function badgeos_vendorlikes_load_triggers() {
+	$woo_vendor_likes_trigger = 'badgeos_vendor_likes_trigger';
+	add_action( $woo_vendor_likes_trigger, 'badgeos_vendor_likes_trigger_event', 10, 20 );
+	
+}
+add_filter( 'badgeos_activity_triggers', 'badgeos_vendor_likes_activity_triggers'  );
+function badgeos_vendor_likes_activity_triggers( $triggers ) {
+
+	$triggers[ 'badgeos_vendor_likes_trigger' ] = __( 'BadgeOS Submit Vendor Likes', 'badgeos-vendor-likes' );
+	return $triggers;
+}
+function vendorliked ($user_id) {
+	global $wpdb, $blog_id;
+	//badgeos_post_log_entry( null, $user_id, null,'prod like triggered '.$user_id);
+	$user_data = get_user_by( 'id', $user_id );
+	$trigger_data = $wpdb->get_results( "SELECT post_id, meta_value FROM $wpdb->postmeta WHERE ( meta_key = '_badgeos_trigger_type' or meta_key = '_point_trigger_type' or meta_key = '_deduct_trigger_type' or meta_key = '_rank_trigger_type' ) AND meta_value = 'badgeos_vendor_likes_trigger'");
+	if( $trigger_data ) {
+		foreach( $trigger_data as $data ) {		
+			//badgeos_post_log_entry( null, $user_id, null,'get post id'. $data->post_id);	
+			$achievement_id =  $data->post_id;
+			$user_crossed_max_allowed_earnings = badgeos_achievement_user_exceeded_max_earnings( $user_id, $achievement_id );
+			//badgeos_post_log_entry( null, $user_id, null,'user_crossed_max_allowed_earnings '. $user_crossed_max_allowed_earnings);	
+			if ( ! $user_crossed_max_allowed_earnings ) {
+				$trigger = $data->meta_value;
+				$minimum_activity_count = absint( get_post_meta( $achievement_id, '_badgeos_count', true ) );
+				$productlikecount = get_user_vendor_likes_count($user_id);
+				
+				$new_count = badgeos_update_user_trigger_count( $user_id, $trigger, $blog_id );
+				//badgeos_post_log_entry( null, $user_id, null,'productlikecount '. $productlikecount.'minimum_activity_count '. $minimum_activity_count);	
+			
+				if ($productlikecount >= $minimum_activity_count) {
+					badgeos_post_log_entry( null, $user_id, null, sprintf( __( '%1$s triggered %2$s (%3$dx)', 'product-likes' ), $user_data->user_login, $trigger, $new_count ) );
+					//$userdeserves = badgeos_user_deserves_step(true, $user_id, $achievement_id, $trigger, 0, array());
+					$args = array(
+						'user_id' => $user_id,
+						'achievement_id' => $achievement_id,
+						);	
+					$useralreadyearned = badgeos_get_user_achievements( $args );
+					/*
+					foreach ($useralreadyearned as $earnedachievement) {
+						$title = get_the_title($earnedachievement->ID);
+						badgeos_post_log_entry( null, $user_id, null, 'user already earned : '.$title );
+					}
+					*/	
+					if (empty($useralreadyearned)) { 
+						badgeos_award_achievement_to_user( $achievement_id, $user_id );		
+					}			
+				}
+			}
+			$parent_achievement = badgeos_get_parent_of_achievement( $achievement_id );
+			if (!empty($parent_achievement->ID)) {
+				
+				$children =  badgeos_get_achievements( array( 'children_of' => $parent_achievement->ID));
+				foreach ( $children as $sibling ) {
+					
+					// If this is the current step, we're good to go and skip
+					if ( $sibling->ID == $achievement_id ) {
+						
+					} else {
+					
+						$step_requirements = badgeos_get_step_requirements( $sibling->ID);
+						$userdeserves = badgeos_user_deserves_step(true, $user_id, $sibling->ID, 'step', 0, array());
+						
+						$args = array(
+							'user_id' => $user_id,
+							'achievement_id' =>  $sibling->ID,
+							);
+						$useralreadyearned = badgeos_get_user_achievements( $args );
+						/*
+						foreach ($useralreadyearned as $earnedachievement) {
+							$title = get_the_title($earnedachievement->ID);
+							badgeos_post_log_entry( null, $user_id, null, 'user already earned : '.$title );
+						}
+						*/							
+						if ($userdeserves && empty($useralreadyearned)) {  
+							badgeos_award_achievement_to_user( $sibling->ID, $user_id, $step_requirements['achievement_type'],0,array() );							
+						}
+					}
+				}
+
+				$userdeserves = badgeos_user_deserves_step(true, $user_id, $parent_achievement->ID, 'badges', 0, array());
+				$args = array(
+					'user_id' => $user_id,
+					'achievement_id' => $parent_achievement->ID,
+					);
+					//'site_id' => 1,
+					//'achievement_type' => false,
+					//'since' => 0,
+				$useralreadyearned = badgeos_get_user_achievements( $args );
+				/*
+				foreach ($useralreadyearned as $earnedachievement) {
+					$title = get_the_title($earnedachievement->ID);
+					badgeos_post_log_entry( null, $user_id, null, 'user already earned : '.$title );
+				}
+				*/					
+				if ($userdeserves && empty($useralreadyearned)) { 
+					badgeos_maybe_award_additional_achievements_to_user( $parent_achievement->ID, $user_id,'badges',0,array() );							
+				}
+			}
+		}
+	}
+	
+}
+function get_user_vendor_likes_count($user_id) {
+	global $wpdb;
+	$vendor_likes_count = 0;
+	$table_name = $wpdb->prefix . "likes_tracking";
+	//badgeos_post_log_entry( null, $user_id, null, 'user  : '.$user_id );
+	if (!empty($user_id)) {
+		$results = $wpdb->get_results("SELECT trackid FROM $table_name WHERE user_id = $user_id");
+		if ( $results ) {
+			$vendor_likes_count = count($results);
+			//badgeos_post_log_entry( null, $user_id, null, 'count  : '.count($results));
+		}
+	}
+	return $vendor_likes_count;
+}
+
+
+
+/**
+* Ajax Call Vendors Likes
+*/
+function add_vendor_likes()
+{
+    // $ppp = (isset($_POST["ppp"])) ? $_POST["ppp"] : 3;
+    $likes = (isset($_POST['likes'])) ? $_POST['likes'] : '';
+    $vendor_id = (isset($_POST['vendor'])) ? $_POST['vendor'] : '';
+    $user_id = (isset($_POST['user'])) ? $_POST['user'] : '';
+    $date_time = date('d-m-y h:i:s');
+
+    //DB And Table Name
+    global $wpdb;
+    $vendor_table_name = $wpdb->prefix . "vendor_likes";
+
+    $ip_address = "";
+    if(!empty($_SERVER['HTTP_CLIENT_IP'])){
+        //ip from share internet
+        $ip_address = $_SERVER['HTTP_CLIENT_IP'];
+    }else{
+        $ip_address = $_SERVER['REMOTE_ADDR'];
+    }
+
+
+    header("Content-Type: text/html");
+
+    if(!empty($user_id) && $user_id != 0)
+    {
+        $results = $wpdb->get_results("SELECT vendor_trackid FROM $vendor_table_name WHERE vendor_id = $vendor_id AND user_id = $user_id");
+        if (count($results)> 0)
+        {
+
+        }
+        else
+        {   
+            $check_total_likes = get_post_meta($vendor_id, 'vendor_like' , true );
+            $check_total_likes = $check_total_likes + 1;
+            $vendor_likes = update_post_meta($vendor_id, 'vendor_like' , $check_total_likes );
+            //$vendor_total_likes = get_post_meta($vendor_id, 'vendor_like' , true );
+            $vendor_total_likes = strval($check_total_likes);
+            $wpdb->insert($vendor_table_name, array(
+                                    'user_id' => $user_id, 
+                                    'vendor_id' => $vendor_id,
+                                    'date_time' => $date_time
+                                   ));
+            die($vendor_total_likes);
+        }
+    }
+    else
+    {   
+       
+        $results = $wpdb->get_results("SELECT vendor_trackid FROM $vendor_table_name WHERE vendor_id = $vendor_id AND ip_address = $ip_address AND user_id IS NULL");
+        if (count($results)> 0)
+        {
+
+        }
+        else{ 
+            $check_total_likes = get_post_meta($vendor_id, 'vendor_like' , true );
+            $check_total_likes = $check_total_likes + 1;
+            $vendor_likes = update_post_meta($vendor_id, 'vendor_like' , $check_total_likes);
+            //$vendor_total_likes = get_post_meta($vendor_id, 'vendor_like' , true );
+            $vendor_total_likes = strval($check_total_likes);
+
+            $wpdb->insert($vendor_table_name, array( 
+                                    'vendor_id' => $vendor_id,
+                                    'ip_address' => $ip_address,
+                                    'date_time' => $date_time
+                                   ));
+         die($vendor_total_likes);
+        }
+    }
+}
+
+=======
+<?php
+
+
+add_action( 'init', 'badgeos_vendorlikes_load_triggers');
+function badgeos_vendorlikes_load_triggers() {
+	$woo_vendor_likes_trigger = 'badgeos_vendor_likes_trigger';
+	add_action( $woo_vendor_likes_trigger, 'badgeos_vendor_likes_trigger_event', 10, 20 );
+	
+}
+add_filter( 'badgeos_activity_triggers', 'badgeos_vendor_likes_activity_triggers'  );
+function badgeos_vendor_likes_activity_triggers( $triggers ) {
+
+	$triggers[ 'badgeos_vendor_likes_trigger' ] = __( 'BadgeOS Submit Vendor Likes', 'badgeos-vendor-likes' );
+	return $triggers;
+}
+function vendorliked ($user_id) {
+	global $wpdb, $blog_id;
+	//badgeos_post_log_entry( null, $user_id, null,'prod like triggered '.$user_id);
+	$user_data = get_user_by( 'id', $user_id );
+	$trigger_data = $wpdb->get_results( "SELECT post_id, meta_value FROM $wpdb->postmeta WHERE ( meta_key = '_badgeos_trigger_type' or meta_key = '_point_trigger_type' or meta_key = '_deduct_trigger_type' or meta_key = '_rank_trigger_type' ) AND meta_value = 'badgeos_vendor_likes_trigger'");
+	if( $trigger_data ) {
+		foreach( $trigger_data as $data ) {		
+			//badgeos_post_log_entry( null, $user_id, null,'get post id'. $data->post_id);	
+			$achievement_id =  $data->post_id;
+			$user_crossed_max_allowed_earnings = badgeos_achievement_user_exceeded_max_earnings( $user_id, $achievement_id );
+			//badgeos_post_log_entry( null, $user_id, null,'user_crossed_max_allowed_earnings '. $user_crossed_max_allowed_earnings);	
+			if ( ! $user_crossed_max_allowed_earnings ) {
+				$trigger = $data->meta_value;
+				$minimum_activity_count = absint( get_post_meta( $achievement_id, '_badgeos_count', true ) );
+				$productlikecount = get_user_vendor_likes_count($user_id);
+				
+				$new_count = badgeos_update_user_trigger_count( $user_id, $trigger, $blog_id );
+				//badgeos_post_log_entry( null, $user_id, null,'productlikecount '. $productlikecount.'minimum_activity_count '. $minimum_activity_count);	
+			
+				if ($productlikecount >= $minimum_activity_count) {
+					badgeos_post_log_entry( null, $user_id, null, sprintf( __( '%1$s triggered %2$s (%3$dx)', 'product-likes' ), $user_data->user_login, $trigger, $new_count ) );
+					//$userdeserves = badgeos_user_deserves_step(true, $user_id, $achievement_id, $trigger, 0, array());
+					$args = array(
+						'user_id' => $user_id,
+						'achievement_id' => $achievement_id,
+						);	
+					$useralreadyearned = badgeos_get_user_achievements( $args );
+					/*
+					foreach ($useralreadyearned as $earnedachievement) {
+						$title = get_the_title($earnedachievement->ID);
+						badgeos_post_log_entry( null, $user_id, null, 'user already earned : '.$title );
+					}
+					*/	
+					if (empty($useralreadyearned)) { 
+						badgeos_award_achievement_to_user( $achievement_id, $user_id );		
+					}			
+				}
+			}
+			$parent_achievement = badgeos_get_parent_of_achievement( $achievement_id );
+			if (!empty($parent_achievement->ID)) {
+				
+				$children =  badgeos_get_achievements( array( 'children_of' => $parent_achievement->ID));
+				foreach ( $children as $sibling ) {
+					
+					// If this is the current step, we're good to go and skip
+					if ( $sibling->ID == $achievement_id ) {
+						
+					} else {
+					
+						$step_requirements = badgeos_get_step_requirements( $sibling->ID);
+						$userdeserves = badgeos_user_deserves_step(true, $user_id, $sibling->ID, 'step', 0, array());
+						
+						$args = array(
+							'user_id' => $user_id,
+							'achievement_id' =>  $sibling->ID,
+							);
+						$useralreadyearned = badgeos_get_user_achievements( $args );
+						/*
+						foreach ($useralreadyearned as $earnedachievement) {
+							$title = get_the_title($earnedachievement->ID);
+							badgeos_post_log_entry( null, $user_id, null, 'user already earned : '.$title );
+						}
+						*/							
+						if ($userdeserves && empty($useralreadyearned)) {  
+							badgeos_award_achievement_to_user( $sibling->ID, $user_id, $step_requirements['achievement_type'],0,array() );							
+						}
+					}
+				}
+
+				$userdeserves = badgeos_user_deserves_step(true, $user_id, $parent_achievement->ID, 'badges', 0, array());
+				$args = array(
+					'user_id' => $user_id,
+					'achievement_id' => $parent_achievement->ID,
+					);
+					//'site_id' => 1,
+					//'achievement_type' => false,
+					//'since' => 0,
+				$useralreadyearned = badgeos_get_user_achievements( $args );
+				/*
+				foreach ($useralreadyearned as $earnedachievement) {
+					$title = get_the_title($earnedachievement->ID);
+					badgeos_post_log_entry( null, $user_id, null, 'user already earned : '.$title );
+				}
+				*/					
+				if ($userdeserves && empty($useralreadyearned)) { 
+					badgeos_maybe_award_additional_achievements_to_user( $parent_achievement->ID, $user_id,'badges',0,array() );							
+				}
+			}
+		}
+	}
+	
+}
+function get_user_vendor_likes_count($user_id) {
+	global $wpdb;
+	$vendor_likes_count = 0;
+	$table_name = $wpdb->prefix . "likes_tracking";
+	//badgeos_post_log_entry( null, $user_id, null, 'user  : '.$user_id );
+	if (!empty($user_id)) {
+		$results = $wpdb->get_results("SELECT trackid FROM $table_name WHERE user_id = $user_id");
+		if ( $results ) {
+			$vendor_likes_count = count($results);
+			//badgeos_post_log_entry( null, $user_id, null, 'count  : '.count($results));
+		}
+	}
+	return $vendor_likes_count;
+}
+
+
+
+/**
+* Ajax Call Vendors Likes
+*/
+function add_vendor_likes()
+{
+    // $ppp = (isset($_POST["ppp"])) ? $_POST["ppp"] : 3;
+    $likes = (isset($_POST['likes'])) ? $_POST['likes'] : '';
+    $vendor_id = (isset($_POST['vendor'])) ? $_POST['vendor'] : '';
+    $user_id = (isset($_POST['user'])) ? $_POST['user'] : '';
+    $date_time = date('d-m-y h:i:s');
+
+    //DB And Table Name
+    global $wpdb;
+    $vendor_table_name = $wpdb->prefix . "vendor_likes";
+
+    $ip_address = "";
+    if(!empty($_SERVER['HTTP_CLIENT_IP'])){
+        //ip from share internet
+        $ip_address = $_SERVER['HTTP_CLIENT_IP'];
+    }else{
+        $ip_address = $_SERVER['REMOTE_ADDR'];
+    }
+
+
+    header("Content-Type: text/html");
+
+    if(!empty($user_id) && $user_id != 0)
+    {
+        $results = $wpdb->get_results("SELECT vendor_trackid FROM $vendor_table_name WHERE vendor_id = $vendor_id AND user_id = $user_id");
+        if (count($results)> 0)
+        {
+
+        }
+        else
+        {   
+            $check_total_likes = get_post_meta($vendor_id, 'vendor_like' , true );
+            $check_total_likes = $check_total_likes + 1;
+            $vendor_likes = update_post_meta($vendor_id, 'vendor_like' , $check_total_likes );
+            //$vendor_total_likes = get_post_meta($vendor_id, 'vendor_like' , true );
+            $vendor_total_likes = strval($check_total_likes);
+            $wpdb->insert($vendor_table_name, array(
+                                    'user_id' => $user_id, 
+                                    'vendor_id' => $vendor_id,
+                                    'date_time' => $date_time
+                                   ));
+            die($vendor_total_likes);
+        }
+    }
+    else
+    {   
+       
+        $results = $wpdb->get_results("SELECT vendor_trackid FROM $vendor_table_name WHERE vendor_id = $vendor_id AND ip_address = $ip_address AND user_id IS NULL");
+        if (count($results)> 0)
+        {
+
+        }
+        else{ 
+            $check_total_likes = get_post_meta($vendor_id, 'vendor_like' , true );
+            $check_total_likes = $check_total_likes + 1;
+            $vendor_likes = update_post_meta($vendor_id, 'vendor_like' , $check_total_likes);
+            //$vendor_total_likes = get_post_meta($vendor_id, 'vendor_like' , true );
+            $vendor_total_likes = strval($check_total_likes);
+
+            $wpdb->insert($vendor_table_name, array( 
+                                    'vendor_id' => $vendor_id,
+                                    'ip_address' => $ip_address,
+                                    'date_time' => $date_time
+                                   ));
+         die($vendor_total_likes);
+        }
+    }
+}
+
+>>>>>>> b7d2a5e0b20a061712f60876241d65e2337009ef
+>>>>>>> db0c04c485b21b4a3a28ccdf0f55ac476237dffe
 ?>

@@ -20,12 +20,23 @@
   text-transform: uppercase;
 }
 .vendor-name {
+<<<<<<< HEAD
   font-family: "Gordita";
+=======
+  font-family: "Poppins" sans-serif;
+>>>>>>> db0c04c485b21b4a3a28ccdf0f55ac476237dffe
   font-size: 14px;
   font-weight: 500;
   color: #b2b2b2;
   display: block;
+<<<<<<< HEAD
   margin: 30px 0 0px;
+=======
+  margin: 0px 0px 0px;
+  padding-bottom: 0px;
+  margin-bottom: 5px !important;
+  margin-top: 5px !important;
+>>>>>>> db0c04c485b21b4a3a28ccdf0f55ac476237dffe
 }
 
 .vendors-list .product-content h4 {
@@ -71,6 +82,12 @@
 .vendorBanner {
   padding: 40px 0 0 0;
 }
+<<<<<<< HEAD
+=======
+.vendorBanner h2 {
+  margin-left: 15px;
+}
+>>>>>>> db0c04c485b21b4a3a28ccdf0f55ac476237dffe
 /* .vendor-list-products-section { padding: 100px 0; } */
 .vendor-list-products-section .vendorProduct_wrap {
   margin-bottom: 30px;
@@ -89,6 +106,10 @@
   line-height: 1.2;
   display: block;
   min-height: 48px;
+<<<<<<< HEAD
+=======
+  margin-top: 8px;
+>>>>>>> db0c04c485b21b4a3a28ccdf0f55ac476237dffe
 }
 .vendor-list-products-section .vendorProduct_wrap .vendor-fb-like .product-like,
 .vendorProduct_wrap .vendor-fb-like p {
@@ -117,6 +138,7 @@
   height: 100%;
   background: rgb(0 0 0 / 35%);
 }
+<<<<<<< HEAD
 .vendor-products-section {
   padding: 0 px;
 }
@@ -136,6 +158,67 @@
   object-fit: contain;
   object-position: center;
   background: white;
+=======
+
+.single-vendor .products-by-impact-wrapper {
+  border-radius: 10px;
+  border: none;
+}
+
+.single-vendor .vendor-products-section {
+  height: auto !important;
+  padding: 0 0px;
+  min-height: 444px;
+}
+
+.single-vendor #products-by-impact-wrapper .owl-item {
+  border-radius: 8px;
+}
+
+.single-vendor .owlproduct.owl-carousel .owl-item img {
+  object-fit: cover;
+  width: 100%;
+  height: 250px;
+}
+
+.single-vendor .vendor-products-section .yith-wcwl-icon {
+  object-fit: contain;
+  height: auto !important;
+}
+
+.single_vendor.vendor-list-products-section .vendor-products-section {
+  padding: 0px;
+  margin: 0px 1.31%;
+  margin-bottom: 30px;
+  display: inline-block;
+  box-shadow: 0 1px 0 0 rgb(139 141 158 / 5%), 0 5px 10px 0 rgb(65 71 107 / 15%);
+  border: 1px solid #eee;
+  width: 30.7% !important;
+  vertical-align: top;
+  position: relative;
+  height: auto !important;
+  border-radius: 8px;
+  display: flex;
+  flex-flow: column;
+}
+.single_vendor.vendor-list-products-section
+  .vendor-products-section
+  .shop-product-price {
+  margin-bottom: 0px;
+}
+
+.single_vendor.vendor-list-products-section .bottom-sep-btn {
+  padding-top: 0px;
+}
+.single-vendor .vendor-products-section img {
+  height: 250px;
+  width: 100%;
+  object-fit: cover;
+  object-position: center;
+  background: white;
+  border-top-right-radius: 10px;
+  border-top-left-radius: 10px;
+>>>>>>> db0c04c485b21b4a3a28ccdf0f55ac476237dffe
 }
 .vendor-list-section .owl-stage {
   display: flex;
@@ -144,8 +227,13 @@
 .vendor-list-section .vendor-slide-section {
   margin: 0px 20px;
 }
+<<<<<<< HEAD
 .our_vendors {
   height: 560px;
+=======
+.vendor-list-products-section {
+  justify-content: flex-start !important;
+>>>>>>> db0c04c485b21b4a3a28ccdf0f55ac476237dffe
 }
 
 .meet_vendors {
@@ -209,6 +297,14 @@
   display: inline-block;
   padding-right: 20px;
 }
+<<<<<<< HEAD
+=======
+
+.single-vendor .impact-icon-txt-wrap .pd-impact-img {
+  max-width: 65px;
+  width: 65px;
+}
+>>>>>>> db0c04c485b21b4a3a28ccdf0f55ac476237dffe
 @media (max-width: 1024px) {
   .vendors-list .product-content h4 a {
     font-size: 26px;
@@ -238,6 +334,10 @@
     display: flex;
     flex-flow: column;
     align-items: center;
+<<<<<<< HEAD
+=======
+    padding-bottom: 26px;
+>>>>>>> db0c04c485b21b4a3a28ccdf0f55ac476237dffe
   }
   .proddetails_impact_statement_title {
     margin-left: 0px !important;
@@ -247,6 +347,26 @@
   .vendorBanner h2 {
     font-size: 36px;
   }
+<<<<<<< HEAD
+=======
+  .vendortop .profileimg img {
+    width: 100%;
+  }
+  .single-vendor .vendor_mission {
+    font-size: 24px !important;
+    line-height: 36px !important;
+    margin-bottom: 0px;
+  }
+
+  .single-vendor .vendorBanner h2 {
+    font-size: 20px !important;
+    margin-bottom: 0px;
+  }
+
+  .single-vendor .vendor-list-products-section {
+    padding-top: 26px;
+  }
+>>>>>>> db0c04c485b21b4a3a28ccdf0f55ac476237dffe
 }
 
 button.vendor-like,
@@ -293,6 +413,10 @@ button.vendor-follow:hover {
   width: 37%;
 }
 .carousel .carouselleft img {
+<<<<<<< HEAD
+=======
+  border-radius: 10px;
+>>>>>>> db0c04c485b21b4a3a28ccdf0f55ac476237dffe
   -webkit-box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.29);
   -moz-box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.29);
   box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.29);
@@ -303,6 +427,12 @@ button.vendor-follow:hover {
   text-align: center;
   width: 60%;
 }
+<<<<<<< HEAD
+=======
+.carousel .carouselright img {
+  margin-bottom: 40px;
+}
+>>>>>>> db0c04c485b21b4a3a28ccdf0f55ac476237dffe
 .vendortop {
   background-image: url("/wp-content/uploads/2021/02/light-grn-paint-bkg-1024x337-1.png");
   background-position: center center;
@@ -315,9 +445,20 @@ button.vendor-follow:hover {
   background-repeat: no-repeat;
   background-size: cover;
 }
+<<<<<<< HEAD
 .vendor_spotlight h1 {
   color: #fff;
   padding-top: 14%;
+=======
+.single-vendor .vendor_spotlight h1 {
+  color: #fff;
+  padding-top: 0px;
+  font-size: 60px;
+  line-height: 65px;
+}
+.single-vendor .vendor_spotlight h1 span {
+  font-size: 70px;
+>>>>>>> db0c04c485b21b4a3a28ccdf0f55ac476237dffe
 }
 .vendor_spotlight h2 {
   color: #fff;
@@ -341,6 +482,36 @@ button.vendor-follow:hover {
   margin-right: 2%;
   margin-bottom: 2%;
 }
+<<<<<<< HEAD
+=======
+.single-vendor .vendor-products-section p {
+  display: none;
+}
+.single_vendor .vendor-products-section .bottom-trending-section {
+  height: auto;
+}
+.single-vendor .vendor-products-section .bottom-trending-section {
+  justify-content: center !important;
+  padding: 0px 30px;
+  flex: 1;
+}
+.single-vendor .vendor-products-section .bottom-trending-section p {
+  display: block;
+  margin-bottom: 0px;
+}
+.vendor-products-section .bottom-trending-section .button {
+  margin-top: 0px;
+  margin-bottom: 25px;
+  position: relative !important;
+}
+.single-vendor .vendor-products-section .bottom-trending-section a {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-line-clamp: 2;
+  text-overflow: ellipsis;
+  -webkit-box-orient: vertical;
+}
+>>>>>>> db0c04c485b21b4a3a28ccdf0f55ac476237dffe
 .category h3.cattitle a,
 .impacttitle,
 .vendor_mission {
@@ -408,7 +579,114 @@ button.vendor-follow:hover {
 .carousel {
   margin: 40px 0 60px 0;
 }
+<<<<<<< HEAD
 @media (max-width: 767px) {
+=======
+
+.single-vendor #products-by-impact-wrapper {
+  border-bottom: none;
+}
+
+.single-vendor .vendortop .impact-icon-vendor {
+  display: none;
+  max-width: 58px;
+}
+
+@media (max-width: 992px) {
+  .single_vendor.vendor-list-products-section .vendor-products-section {
+    width: 47.3% !important;
+  }
+}
+
+@media (max-width: 767px) {
+  .single-vendor .vendortop .vendorhighfive {
+    margin-right: 15%;
+  }
+  .single-vendor .vendortop .vendorfollow,
+  .single-vendor .vendortop .vendorhighfive {
+    text-align: left;
+    margin-left: 0px;
+    font-weight: 500;
+    font-size: 14px;
+    color: #5b9392;
+    line-height: 20px;
+    display: inline;
+    max-width: 90px;
+    padding: 0px;
+  }
+  .single-vendor .vendortop .vendorfollow button,
+  .single-vendor .vendortop .vendorhighfive button {
+    padding: 0px;
+    margin-right: 12px;
+  }
+  .single-vendor .vendortop .impact-icon-txt-wrap {
+    display: none;
+  }
+  .single-vendor .vendortop .hidden-impact-icon {
+    display: flex;
+  }
+  .single-vendor .vendortop .impact-icon-vendor {
+    display: block;
+  }
+  .single-vendor .vendortop {
+    background-image: none;
+  }
+  .single-vendor .vendortop .profileright h2 {
+    font-size: 18px !important;
+    color: #5b9392;
+    margin-bottom: 0px;
+    margin-left: 20px;
+    padding-top: 18px;
+  }
+  .single-vendor .vendortop .profileright p {
+    line-height: 31px;
+    padding-top: 26px;
+  }
+  .single-vendor .vendortop {
+    padding: 0px;
+  }
+  .single-vendor .vendortop .profileright {
+    text-align: left;
+  }
+  .single-vendor .vendortop .profileimg img {
+    max-width: 180px;
+  }
+  .single-vendor .vendor_spotlight {
+    min-height: 300px !important;
+    height: auto !important;
+  }
+  .single-vendor #products-by-impact-wrapper .owl-nav button span {
+    display: none;
+  }
+  .single-vendor #products-by-impact-wrapper .owl-nav button {
+    width: 36px;
+    height: 36px;
+  }
+  .single-vendor #products-by-impact-wrapper .owl-nav .owl-prev {
+    top: 0;
+    left: 37%;
+    background-image: url(/wp-content/uploads/2021/07/left-chevron.png) !important;
+    background-size: 16px !important;
+    background-repeat: no-repeat !important;
+    background-position: center !important;
+  }
+  .single-vendor #products-by-impact-wrapper .owl-nav .owl-next {
+    top: 0;
+    right: 37%;
+    background-image: url(/wp-content/uploads/2021/07/right-chevron.png) !important;
+    background-size: 16px !important;
+    background-repeat: no-repeat !important;
+    background-position: center !important;
+  }
+
+  .single-vendor #products-by-impact-wrapper .owl-nav {
+    width: 100%;
+    position: relative;
+  }
+  .single_vendor.vendor-list-products-section .vendor-products-section {
+    width: 100% !important;
+  }
+>>>>>>> db0c04c485b21b4a3a28ccdf0f55ac476237dffe
   .learnaboutimpact h2:before,
   .learnaboutimpact h2:after {
     display: none;
@@ -549,7 +827,10 @@ button.vendor-follow:hover {
   }
   .our_vendors h1 {
     padding-top: 28%;
+<<<<<<< HEAD
     font-size: 28px !important;
+=======
+>>>>>>> db0c04c485b21b4a3a28ccdf0f55ac476237dffe
   }
 }
 @media (max-width: 1024px) and (min-width: 768px) {
@@ -572,10 +853,16 @@ button.vendor-follow:hover {
   background-repeat: no-repeat;
   background-size: cover;
   padding: 100px 0;
+<<<<<<< HEAD
   /* background-image: url(Rectangle-51.png); */
   background-color: blue;
   position: relative;
   margin-bottom: 100px;
+=======
+  position: relative;
+  margin-bottom: 100px;
+  background-position: center;
+>>>>>>> db0c04c485b21b4a3a28ccdf0f55ac476237dffe
 }
 
 .learn-more-impact .learn-title {
@@ -593,7 +880,11 @@ button.vendor-follow:hover {
   color: #ffffff;
   font-weight: normal;
   display: block;
+<<<<<<< HEAD
   margin-bottom: 20px;
+=======
+  margin-bottom: 19px;
+>>>>>>> db0c04c485b21b4a3a28ccdf0f55ac476237dffe
 }
 
 .learn-more-impact .impact-wrap {
@@ -603,7 +894,10 @@ button.vendor-follow:hover {
 }
 
 .learn-a {
+<<<<<<< HEAD
   background-color: ;
+=======
+>>>>>>> db0c04c485b21b4a3a28ccdf0f55ac476237dffe
   color: #ffffff;
   border: none !important;
   border-radius: 10px;

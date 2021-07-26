@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <?php
 /**
  * The template for displaying search results pages
@@ -155,4 +156,323 @@ if($loop->have_posts())
 </div>
 
     <?php
+=======
+<<<<<<< HEAD
+<?php
+/**
+ * The template for displaying search results pages
+ *
+ * @link https://developer.wordpress.org/themes/basics/template-hierarchy/#search-result
+ *
+ * @package Reign
+ */
+get_header();
+$id = get_the_ID();
+$title = get_the_title();
+$vendor_profile_image = get_field('v_profile_pic', $id);
+
+?>
+
+<?php do_action( 'wbcom_before_content_section' ); ?>
+
+<div class="content-wrapper">
+<div class="vendortop">
+<div class="profileleft">
+<?php 
+if( !empty( $vendor_profile_image ) ):
+	echo '<div class="polaroid"><span>';
+	echo '<img src="'.esc_url($vendor_profile_image['url']).'" alt="'.$vendor_name.'" /> '.$vendor_name;
+    echo '</span></div>';
+endif;	?>
+</div>
+<div class="profileright">
+<?php
+$large_image_url = wp_get_attachment_image_src( get_post_thumbnail_id($id), 'small');
+$large_image_url = !empty($large_image_url) ? $large_image_url : array(''); 
+echo '<div class="vendor-logo">'; 
+echo '<img src="'.$large_image_url[0].'" alt="'.$title.'">';
+echo '</div>';
+?>
+<?php echo do_shortcode('[single-vendor-highfive vendor='.$id.']'); ?>
+
+
+<?php echo do_shortcode('[single-vendor-follow vendor='.$id.']'); ?>
+</div>
+</div>
+<?php 
+$postsperpage = 15;
+$paged = (get_query_var('paged')) ? get_query_var('paged') : 1;
+$args = array(
+        'post_type' => 'product',
+        'order' => 'ASC',        
+        'posts_per_page' => $postsperpage,   
+        'paged' => $paged,   
+        'post_status' => 'publish',
+        'meta_query' => array(
+           'meta_value' => array(
+                'key' => 'vendor_name', 
+                'value' => $id,
+    )));
+$loop = new WP_Query($args);
+$products = $loop->posts;
+if($loop->have_posts()) 
+    { ?>
+        <div class="vendorBanner">
+            <div class="container">
+                <h2>Products of <?php echo $title; ?></h2>
+            </div>
+        </div>
+        <div class="single_vendor vendor-list-products-section">
+        <?php
+        $html = '';
+        global $wpdb;
+        $table_name = $wpdb->prefix . "likes_tracking";
+        foreach($products as $value) {
+                    $image = wp_get_attachment_image_src( get_post_thumbnail_id( $value->ID ), 'single-post-thumbnail' );
+                    $impacts = get_post_meta($value->ID, 'impact_elements' , true );
+                    $product = wc_get_product( $value->ID );
+                    $symbol = get_woocommerce_currency_symbol();
+                    $vendor_id = get_post_meta($value->ID, 'vendor_name' , true );
+                    $vendor_name = get_the_title($vendor_id);
+                    $like = get_post_meta($value->ID, 'like' , true);
+                    $wishlist = do_shortcode('[yith_wcwl_add_to_wishlist product_id='.$value->ID.']');
+                    $user_id = get_current_user_id();
+                    $pro_id = $value->ID;
+                    $prdimg = !empty($image[0]) ? $image[0] : plugin_dir_url( __DIR__ ) .'images/placeholder.png' ;
+                    $results = $wpdb->get_results("SELECT trackid FROM $table_name WHERE product_id = $value->ID AND user_id = $user_id");
+
+                    $html .='
+                            <div class="vendor-products-section">
+                                <div class="top-trending-section">
+                                <p>'.$wishlist.'</p>
+                                <a href="'.get_permalink($value->ID).'"><img src="'.$prdimg.'" alt="'.$value->post_title.'"></a>
+                                <div class="fb-like">
+                                <button class="product-like thumbid-'.$value->ID.'" data-product="'.$value->ID.'" data-name="'.$value->post_title.'" data-likes="'.$like.'" data-user="'.$user_id.'">';
+                                if (count($results)> 0){
+                                    $html .='<i class="fas fa-thumbs-up"></i>';
+                                }
+                                else{
+                                    $html .='<i class="far fa-thumbs-up"></i>';
+                                }
+                                    $html .='</button>
+                                    <p class="shop-likes likes-add-'.$value->ID.'">';
+                                            $initial_value = 0;
+                                            if(!empty($like))
+                                            {
+                                                $html .=$like; 
+                                                }
+                                                else
+                                                { 
+                                                $html .=$initial_value;
+                                                }
+                                            $html .='</p>
+                                </div>
+                                    
+                                </div>
+                                <div class="bottom-trending-section">
+                                <p class="vendor-name">'.$vendor_name.'</p>
+                                <a href="'.get_permalink($value->ID).'" class="shop-product-title">'.$value->post_title.'</a>';
+                                if( ! $product->is_type('variable') ){
+                                    $price = $symbol.$product->get_regular_price();
+                                } else {
+                                    $min_price = $product->get_variation_price( 'min' );
+                                    $max_price = $product->get_variation_price( 'max' );
+                                    $price = $symbol.$min_price.' - '.$symbol.$max_price;
+                                }
+                                $html .= '<p class="shop-product-price">'.$price.'</p>';
+                                
+                                $buttontext = "add to bag";
+                                if( my_custom_cart_contains( $product_id ) ) {
+                                    $buttontext = "added to bag";
+                                } 
+                                $html .= '<button class="button add_to_cart_button my-custom-add-to-cart-button" data-product-id="'.$product_id.'">'.$buttontext.'</button>';
+                        $html .= '</div>
+                    </div>';
+                } 
+            echo $html; ?>
+        </div>
+        <?php 
+    }
+    ?>
+
+<?php if ( $loop->max_num_pages > 1 ) { ?>
+<nav class="navigation posts-navigation rg-posts-navigation" role="navigation">
+<div class="nav-links">
+    <?php
+    $big = 999999999; // need an unlikely integer
+    echo paginate_links( array(
+        'base' => str_replace( $big, '%#%', esc_url( get_pagenum_link( $big ) ) ),
+        'format' => '?paged=%#%',
+        'current' => $paged,
+        'total' => $loop->max_num_pages,
+        'prev_next' => false
+    ) );
+    ?>
+</div>
+</nav>
+<?php } ?>
+
+</div>
+
+    <?php
+=======
+<?php
+/**
+ * The template for displaying search results pages
+ *
+ * @link https://developer.wordpress.org/themes/basics/template-hierarchy/#search-result
+ *
+ * @package Reign
+ */
+get_header();
+$id = get_the_ID();
+$title = get_the_title();
+$vendor_profile_image = get_field('v_profile_pic', $id);
+
+?>
+
+<?php do_action( 'wbcom_before_content_section' ); ?>
+
+<div class="content-wrapper">
+<div class="vendortop">
+<div class="profileleft">
+<?php 
+if( !empty( $vendor_profile_image ) ):
+	echo '<div class="polaroid"><span>';
+	echo '<img src="'.esc_url($vendor_profile_image['url']).'" alt="'.$vendor_name.'" /> '.$vendor_name;
+    echo '</span></div>';
+endif;	?>
+</div>
+<div class="profileright">
+<?php
+$large_image_url = wp_get_attachment_image_src( get_post_thumbnail_id($id), 'small');
+$large_image_url = !empty($large_image_url) ? $large_image_url : array(''); 
+echo '<div class="vendor-logo">'; 
+echo '<img src="'.$large_image_url[0].'" alt="'.$title.'">';
+echo '</div>';
+?>
+<?php echo do_shortcode('[single-vendor-highfive vendor='.$id.']'); ?>
+
+
+<?php echo do_shortcode('[single-vendor-follow vendor='.$id.']'); ?>
+</div>
+</div>
+<?php 
+$postsperpage = 15;
+$paged = (get_query_var('paged')) ? get_query_var('paged') : 1;
+$args = array(
+        'post_type' => 'product',
+        'order' => 'ASC',        
+        'posts_per_page' => $postsperpage,   
+        'paged' => $paged,   
+        'post_status' => 'publish',
+        'meta_query' => array(
+           'meta_value' => array(
+                'key' => 'vendor_name', 
+                'value' => $id,
+    )));
+$loop = new WP_Query($args);
+$products = $loop->posts;
+if($loop->have_posts()) 
+    { ?>
+        <div class="vendorBanner">
+            <div class="container">
+                <h2>Products of <?php echo $title; ?></h2>
+            </div>
+        </div>
+        <div class="single_vendor vendor-list-products-section">
+        <?php
+        $html = '';
+        global $wpdb;
+        $table_name = $wpdb->prefix . "likes_tracking";
+        foreach($products as $value) {
+                    $image = wp_get_attachment_image_src( get_post_thumbnail_id( $value->ID ), 'single-post-thumbnail' );
+                    $impacts = get_post_meta($value->ID, 'impact_elements' , true );
+                    $product = wc_get_product( $value->ID );
+                    $symbol = get_woocommerce_currency_symbol();
+                    $vendor_id = get_post_meta($value->ID, 'vendor_name' , true );
+                    $vendor_name = get_the_title($vendor_id);
+                    $like = get_post_meta($value->ID, 'like' , true);
+                    $wishlist = do_shortcode('[yith_wcwl_add_to_wishlist product_id='.$value->ID.']');
+                    $user_id = get_current_user_id();
+                    $pro_id = $value->ID;
+                    $prdimg = !empty($image[0]) ? $image[0] : plugin_dir_url( __DIR__ ) .'images/placeholder.png' ;
+                    $results = $wpdb->get_results("SELECT trackid FROM $table_name WHERE product_id = $value->ID AND user_id = $user_id");
+
+                    $html .='
+                            <div class="vendor-products-section">
+                                <div class="top-trending-section">
+                                <p>'.$wishlist.'</p>
+                                <a href="'.get_permalink($value->ID).'"><img src="'.$prdimg.'" alt="'.$value->post_title.'"></a>
+                                <div class="fb-like">
+                                <button class="product-like thumbid-'.$value->ID.'" data-product="'.$value->ID.'" data-name="'.$value->post_title.'" data-likes="'.$like.'" data-user="'.$user_id.'">';
+                                if (count($results)> 0){
+                                    $html .='<i class="fas fa-thumbs-up"></i>';
+                                }
+                                else{
+                                    $html .='<i class="far fa-thumbs-up"></i>';
+                                }
+                                    $html .='</button>
+                                    <p class="shop-likes likes-add-'.$value->ID.'">';
+                                            $initial_value = 0;
+                                            if(!empty($like))
+                                            {
+                                                $html .=$like; 
+                                                }
+                                                else
+                                                { 
+                                                $html .=$initial_value;
+                                                }
+                                            $html .='</p>
+                                </div>
+                                    
+                                </div>
+                                <div class="bottom-trending-section">
+                                <p class="vendor-name">'.$vendor_name.'</p>
+                                <a href="'.get_permalink($value->ID).'" class="shop-product-title">'.$value->post_title.'</a>';
+                                if( ! $product->is_type('variable') ){
+                                    $price = $symbol.$product->get_regular_price();
+                                } else {
+                                    $min_price = $product->get_variation_price( 'min' );
+                                    $max_price = $product->get_variation_price( 'max' );
+                                    $price = $symbol.$min_price.' - '.$symbol.$max_price;
+                                }
+                                $html .= '<p class="shop-product-price">'.$price.'</p>';
+                                
+                                $buttontext = "add to bag";
+                                if( my_custom_cart_contains( $product_id ) ) {
+                                    $buttontext = "added to bag";
+                                } 
+                                $html .= '<button class="button add_to_cart_button my-custom-add-to-cart-button" data-product-id="'.$product_id.'">'.$buttontext.'</button>';
+                        $html .= '</div>
+                    </div>';
+                } 
+            echo $html; ?>
+        </div>
+        <?php 
+    }
+    ?>
+
+<?php if ( $loop->max_num_pages > 1 ) { ?>
+<nav class="navigation posts-navigation rg-posts-navigation" role="navigation">
+<div class="nav-links">
+    <?php
+    $big = 999999999; // need an unlikely integer
+    echo paginate_links( array(
+        'base' => str_replace( $big, '%#%', esc_url( get_pagenum_link( $big ) ) ),
+        'format' => '?paged=%#%',
+        'current' => $paged,
+        'total' => $loop->max_num_pages,
+        'prev_next' => false
+    ) );
+    ?>
+</div>
+</nav>
+<?php } ?>
+
+</div>
+
+    <?php
+>>>>>>> b7d2a5e0b20a061712f60876241d65e2337009ef
+>>>>>>> db0c04c485b21b4a3a28ccdf0f55ac476237dffe
 get_footer();

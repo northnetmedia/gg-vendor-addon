@@ -206,7 +206,12 @@ add_shortcode('List-Of-Vendors', 'list_of_vendors_init');
 function list_of_vendors_init(){
     $args = array(
         'post_type'      => 'vendor',
+<<<<<<< HEAD
         'order' => 'DESC', 
+=======
+		'orderby' => 'post_name',
+        'order' => 'ASC', 
+>>>>>>> db0c04c485b21b4a3a28ccdf0f55ac476237dffe
         'posts_per_page' => -1,          
     );
     $loop = get_posts($args);
@@ -389,7 +394,11 @@ function vendor_image_polaroid()
 
     $html = '<div class="polaroid"><span>';
     if (!empty($vendor_profile_image)) :
+<<<<<<< HEAD
         $html .= '<img src="' . esc_url($carousel) . '" alt="' . $vendor_name . '" /> ';// . $vendor_name
+=======
+        $html .= '<img src="' . esc_url($carousel) . '" alt="' . $vendor_name . '" /> ' . $vendor_name;
+>>>>>>> db0c04c485b21b4a3a28ccdf0f55ac476237dffe
     endif;
     $html .= '</span></div>';
     return $html;
@@ -424,10 +433,16 @@ function vendor_details_for_proddetails(){
     //$html .='<p><a href="'.get_permalink($vendor_id).'" class="vendorLink">Learn More about '.$vendor_name.'</a></p>';
     $html .='<div class="vendorexcerpt">';
 	$html .= '<p class="vendordetails">' . $about . '</p>';
+<<<<<<< HEAD
     $html .='<div class="vendorhighfive col-7"><button class="vendor-like thumbid-'.$vendor_id.'" data-vendor="'.$vendor_id.'" data-likes="'.$vendor_likes.'" data-user="'.$user_id.'"><div class="likes-vendor-add-'.$vendor_id.'">'.$vendor_likes.' 
 	<i class="icon-highfive'.$alreadyliked.'"></i></div></button> Give a High Five '.displaytooltip("Give your favourite vendor a high-five and you can earn badges","Give a high-five Tool Tip").'</div>';
     $html .='<div class="vendorfollow col-5"><div class="vendor-followers-'.$vendor_id.'" style="display:inline-block;"><button class="vendor-follow" data-vendor="'.$vendor_id.'" data-followers="'.$vendor_followers.'">'.$vendor_followers.' <i class="icon-follow'.$alreadyliked.'"></i></button></div>  Follow '.displaytooltip("Follow your favourite vendor(s) and earn badges.","Follow Vendor Tool Tip").'</div>';
     /*
+=======
+    $html .='<div class="vendorhighfive "><button class="vendor-like thumbid-'.$vendor_id.'" data-vendor="'.$vendor_id.'" data-likes="'.$vendor_likes.'" data-user="'.$user_id.'"><div class="likes-vendor-add-'.$vendor_id.'">'.$vendor_likes.' 
+	<i class="icon-highfive'.$alreadyliked.'"></i></div></button> Give a High Five</div>';
+    $html .='<div class="vendorfollow"><div class="vendor-followers-'.$vendor_id.'" style="display:inline-block;"><button class="vendor-follow" data-vendor="'.$vendor_id.'" data-followers="'.$vendor_followers.'">'.$vendor_followers.' <i class="icon-follow'.$alreadyliked.'"></i></button></div>  Follow</div>';
+>>>>>>> db0c04c485b21b4a3a28ccdf0f55ac476237dffe
     if (!empty($impacts)) {
         $html .='<div><br/>';
         foreach ($impacts as $data) {
@@ -438,7 +453,10 @@ function vendor_details_for_proddetails(){
         }
         $html .='</div>';
     }
+<<<<<<< HEAD
     */
+=======
+>>>>>>> db0c04c485b21b4a3a28ccdf0f55ac476237dffe
     $html .='</div>';
     $html .='</div>';
     return $html;
