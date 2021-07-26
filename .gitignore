@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 *.php
 *.css
 *.php
@@ -13,19 +12,3 @@
 !templates/archive-vendor.php
 !templates/single-vendor.php
 !badgeos-woocommerce-vendor-addon.php
-=======
-*.php
-*.css
-*.php
-*.js
-!css/style.css
-!includes/rules-engine.php
-!includes/shortcodes.php
-!includes/vendor.php
-!js/owl.carousel.min.js
-!js/scripts.js
-!js/vendor_script.js
-!templates/archive-vendor.php
-!templates/single-vendor.php
-!badgeos-woocommerce-vendor-addon.php
->>>>>>> b7d2a5e0b20a061712f60876241d65e2337009ef
