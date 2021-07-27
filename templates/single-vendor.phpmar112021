@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 <?php
 /**
@@ -217,6 +218,226 @@ if($loop->have_posts())  { ?>
 <?php } ?>
 </div>
    <?php
+=======
+
+<?php
+/**
+ * The template for displaying search results pages
+ *
+ * @link https://developer.wordpress.org/themes/basics/template-hierarchy/#search-result
+ *
+ * @package Reign
+ */
+get_header();
+$id = get_the_ID();
+$title = get_the_title();
+$v_profile_pic = get_post_meta( $id, 'v_profile_pic', true );
+$vendor_carousel = get_post_meta( $id, 'v_logo', $id);
+$website_url = get_post_meta( $id, 'v_website_url', true );
+$video_url = get_post_meta( $id, 'v_video_url', true );
+$mission = get_post_meta( $id, 'v_mission', true );
+$vendor_details = get_post_meta( $id, 'v_vendor_details', true );
+$impacts = get_post_meta( $id, 'impact_elements', true );
+$carousel = wp_get_attachment_url( $vendor_carousel );
+$profile_img = wp_get_attachment_url( $v_profile_pic );
+
+/*
+$vendorcategories = $wpdb->get_results( $wpdb->prepare("SELECT DISTINCT t.name AS product_category, t.term_id
+FROM {$wpdb->prefix}posts p 
+JOIN {$wpdb->prefix}postmeta pm1 ON pm1.post_id = p.ID AND pm1.meta_key = 'vendor_name' AND pm1.meta_value = %d
+LEFT JOIN {$wpdb->prefix}term_relationships AS tr ON tr.object_id = p.ID
+JOIN {$wpdb->prefix}term_taxonomy AS tt ON tt.taxonomy = 'product_cat' AND parent <> 0 AND tt.term_taxonomy_id = tr.term_taxonomy_id 
+JOIN {$wpdb->prefix}terms AS t ON t.term_id = tt.term_id
+WHERE p.post_type = 'product' AND p.post_status = 'publish'",$id)) ;
+*/
+?>
+<div class="content-wrapper">
+<section class="vendor_spotlight templatepageheader" style="margin-left: calc(50% - 50vw);  margin-right: calc(50% - 50vw);height: 460px; position:relative; top:-60px;"">
+    <div class="background-overlay"></div>
+    <div class="container" style="padding-left: 80px;">
+        <h1 class="elementor-heading-title elementor-size-default">How <?php echo $title; ?> shares the  <span style="font-family: 'Playlist Script'; font-size: 40pt; font-weight: 400;">guud</span> </h1>
+        <h2>Wear Hope, Give Hope.</h2>
+    </div>
+</section>
+<div class="carousel">
+    <div class="carouselleft">
+        <?php 
+        if( !empty( $carousel ) ):
+            echo '<img src="'.esc_url($carousel).'" alt="'.$title.'" />';
+        endif;	?>
+        </div>
+    <div class="carouselright">
+        <h2 class="vendor_mission">"<?php echo $mission; ?>"</h2>
+        <img src="/wp-content/uploads/2020/11/yellow-heart.png"  alt="<?php echo $title; ?>" width="100">
+
+    </div>
+</div>
+<div class="vendortop">
+    <div class="profileleft">
+    <?php  if( !empty( $profile_img ) ): ?>
+        <div class="profileimg">
+        <img src="<?php echo esc_url($profile_img); ?>" alt="<?php echo $vendor_name; ?>" />
+        </div>
+   <?php endif;	?>
+    </div>
+    <div class="profileright">
+        <h2>About <?php echo $title; ?></h2>
+        <p><?php echo $vendor_details; ?></p>
+        <?php foreach ($impacts as $key => $impact) { ?>   
+            <?php     
+            $image_id = get_post_meta( $impact, '_impact_icon', true );
+            $image_src = wp_get_attachment_url( $image_id );
+            $specific_impact_statement = get_post_meta( $impact, 'specific_impact_statement', true );
+            ?>
+            <div>
+                <?php if (!empty($image_src)) { ?>
+                    <div class="proddetails_impact_statement_icon"><img src="<?php echo $image_src; ?>" class="pd-impact-img"></div>
+                <?php } ?>
+                <div class="proddetails_impact_statement_title"><?php echo $specific_impact_statement; ?></div>
+            </div>
+            <div style="clear:both"></div>
+            <p></p>
+        <?php } ?>
+        <?php echo do_shortcode('[single-vendor-highfive vendor='.$id.']'); ?>
+        <?php echo do_shortcode('[single-vendor-follow vendor='.$id.']'); ?>
+    </div>
+</div>
+<?php 
+$postsperpage = 15;
+$paged = (get_query_var('paged')) ? get_query_var('paged') : 1;
+$args = array(
+        'post_type' => 'product',
+        'order' => 'ASC',        
+        'posts_per_page' => $postsperpage,   
+        'paged' => $paged,   
+        'post_status' => 'publish',
+        'meta_query' => array(
+           'meta_value' => array(
+                'key' => 'vendor_name', 
+                'value' => $id,
+    )));
+$catname = '';
+if (isset($_GET['vc']) && !empty($_GET['vc'])) {
+    //$args['cat'] = sanitize_text_field($_GET['vc']);
+    $args['tax_query'] = array(
+            array(
+        'taxonomy' => 'product_cat', 
+        'field' => 'id', 
+        'terms' => array( $_GET['vc'])
+        )
+    );
+    $term = get_term_by( 'id', sanitize_text_field($_GET['vc']), 'product_cat' );
+    $catname = $term->name;
+}
+//print_r($args);
+$loop = new WP_Query($args);
+//print_r($loop);
+$products = $loop->posts;
+if($loop->have_posts())  { ?>
+    <div class="vendorBanner" id="productlist">
+        <div class="container">
+            <h2>Products of <?php echo $title; ?><?php echo !empty($catname) ? ' for ' .$catname : ''; ?></h2>
+        </div>
+    </div>
+    <div class="single_vendor vendor-list-products-section" style="text-align: center;">
+    <?php
+    $html = '';
+    global $wpdb;
+    $table_name = $wpdb->prefix . "likes_tracking";
+    foreach($products as $value) {
+                $image = wp_get_attachment_image_src( get_post_thumbnail_id( $value->ID ), 'single-post-thumbnail' );
+                $impacts = get_post_meta($value->ID, 'impact_elements' , true );
+                $product = wc_get_product( $value->ID );
+                $symbol = get_woocommerce_currency_symbol();
+                $vendor_id = get_post_meta($value->ID, 'vendor_name' , true );
+                $vendor_name = get_the_title($vendor_id);
+                $like = get_post_meta($value->ID, 'like' , true);
+                $wishlist = do_shortcode('[yith_wcwl_add_to_wishlist product_id='.$value->ID.']');
+                $user_id = get_current_user_id();
+                $pro_id = $value->ID;
+                $prdimg = !empty($image[0]) ? $image[0] : plugin_dir_url( __DIR__ ) .'images/placeholder.png' ;
+                $results = $wpdb->get_results("SELECT trackid FROM $table_name WHERE product_id = $value->ID AND user_id = $user_id");
+
+                $html .='
+                        <div class="vendor-products-section">
+                            <div class="top-trending-section">
+                            <p>'.$wishlist.'</p>
+                            <a href="'.get_permalink($value->ID).'"><img src="'.$prdimg.'" alt="'.$value->post_title.'"></a>
+                            </div>
+                            <div class="bottom-trending-section">
+                            <p class="vendor-name">'.$vendor_name.'</p>
+                            <a href="'.get_permalink($value->ID).'" class="shop-product-title">'.$value->post_title.'</a>';
+                            if( ! $product->is_type('variable') ){
+                                $price = $symbol.$product->get_regular_price();
+                            } else {
+                                $min_price = $product->get_variation_price( 'min' );
+                                $max_price = $product->get_variation_price( 'max' );
+                                $price = $symbol.$min_price.' - '.$symbol.$max_price;
+                            }
+                            $html .= '<p class="shop-product-price">'.$price.'</p>';
+                            
+                            $buttontext = "add to bag";
+                            if( my_custom_cart_contains( $product_id ) ) {
+                                $buttontext = "added to bag";
+                            } 
+                            $html .= '<button class="button add_to_cart_button my-custom-add-to-cart-button" data-product-id="'.$pro_id.'">'.$buttontext.'</button>';
+                    $html .= '</div>
+                </div>';
+            } 
+        echo $html; ?>
+    </div>
+    <?php 
+} else { ?>
+    <div class="vendorBanner" id="productlist">
+        <div class="container">
+            <h2>No Products were found <?php echo !empty($catname) ? 'for ' .$catname : ''; ?></h2>
+        </div>
+    </div>
+
+<?php } ?>
+<?php if ( $loop->max_num_pages > 1 ) { ?>
+    <nav class="navigation posts-navigation rg-posts-navigation" role="navigation">
+        <div class="nav-links">
+            <?php
+            $big = 999999999; // need an unlikely integer
+            $args = array(
+                'base' => str_replace( $big, '%#%', esc_url( get_pagenum_link( $big ) ) ),
+                'format' => '?paged=%#%',
+                'current' => $paged,
+                'total' => $loop->max_num_pages,
+                'prev_next' => false
+            );
+            if (isset($_GET['vc']) && !empty($_GET['vc'])) {
+                $args['add_args'] = array('vc' => sanitize_text_field($_GET['vc']));
+            }
+            echo paginate_links($args );
+
+            ?>
+        </div>
+    </nav>
+<?php } ?>
+
+<?php foreach ($impacts as $key => $impact) { ?>   
+
+    <?php echo do_shortcode('[List-Of-Products_by_Impact impact="'.$impact.'"]'); ?>
+    
+    <?php     
+    $image_id = get_post_meta( $impact, '_impact_icon', true );
+    $image_src = wp_get_attachment_url( $image_id );
+    $specific_impact_statement = get_post_meta( $impact, 'specific_impact_statement', true );
+    $impacttitle = get_the_title($impact)
+    ?>
+    <div class="learnaboutimpact">
+        <h2>Learn more about this impact</h2>
+        <div class="impacticon"><img src="<?php echo $image_src; ?>" alt="<?php echo $impacttitle; ?>"></div>
+        <div class="impacttitle"><?php echo $impacttitle; ?></div>
+        <div class="impactstate"><?php echo $specific_impact_statement ; ?></div>        
+        <div class="impactshop"><a href="<?php echo get_permalink( $impact ); ?>"><button name="shopimpact" class="btn">Shop This Impact</button></a></div>
+    </div>
+<?php } ?>
+</div>
+   <?php
+>>>>>>> edcc9816c429b5664f141e361560830f6738cf2c
 =======
 <<<<<<< HEAD
 

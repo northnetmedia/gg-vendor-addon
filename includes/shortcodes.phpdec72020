@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 
 /**
@@ -363,6 +364,372 @@ function list_of_vendors_init(){
 
 
 
+=======
+<?php
+
+/**
+* Vendor List Slide Shortcode In Homepage and Shop Page
+*/
+add_shortcode('Vendor-Listing', 'vendor_list_init');
+function vendor_list_init($atts){
+    $args = array(
+        'post_type'      => 'vendor',
+        'order' => 'ASC', 
+        'posts_per_page' => 4,          
+    );
+    $loop = get_posts($args);
+
+   $html = '<div class="vendor-list-section owl-carousel" id="vendor-slide-list-wrapper">';
+            if(!empty($loop)) 
+            {
+                foreach ($loop as $data) 
+                {
+                    $html .='<div class="vendor-slide-section">
+                                <img src="'.get_the_post_thumbnail_url($data->ID).'">
+                             </div>';
+                } 
+            }
+    $html .='</div>';
+    return $html;
+}
+
+
+
+/**
+* Starfish Project Listing Shortcode In Shop
+*/
+add_shortcode('StarfishProject-Vendor-Listing', 'starfish_vendor_list_init');
+function starfish_vendor_list_init(){
+    $args = array(
+        'post_type' => 'product',
+        'order' => 'ASC',
+        'meta_query' => array(
+           'meta_value' => array(
+                'key' => 'vendor_name', 
+                'value' => 232,
+    )));
+    $loop = get_posts($args);
+
+    // echo "<pre>";
+    // print_r($loop);
+    // echo "</pre>";
+
+   $html = '<div class="starfish-vendor-list-section owl-carousel" id="starfish-products-wrapper">';
+            if(!empty($loop)) 
+            {
+                foreach ($loop as $value) 
+                {
+                    $image = wp_get_attachment_image_src( get_post_thumbnail_id( $value->ID ), 'single-post-thumbnail' );
+                    $product = wc_get_product( $value->ID );
+                    $symbol = get_woocommerce_currency_symbol();
+                    $vendor_id = get_post_meta($value->ID, 'vendor_name' , true );
+                    $vendor_name = get_the_title($vendor_id);
+                        $html .='
+                                <div class="vendor-products-section">
+                                    <img src="'.$image[0].'">
+                                    <p class="vendor-name">'.$vendor_name.'</p>
+                                    <a href="'.get_permalink($value->ID).'" class="shop-product-title">'.$value->post_title.'</a>';
+                                    if(!empty($product->get_regular_price()))
+                                    {
+                                        $html .='<p class="shop-product-price">'.$symbol.$product->get_regular_price().'</p>';
+                                    }
+                        $html .='</div>';
+                } 
+            }
+    $html .= '</div>';
+    return $html;
+}
+
+
+/**
+* Yoobi Listing Shortcode In Shop
+*/
+add_shortcode('Yoobi-Vendor-Listing', 'yoobi_vendor_list_init');
+function yoobi_vendor_list_init(){
+    $args = array(
+        'post_type' => 'product',
+        'order' => 'ASC',
+        'meta_query' => array(
+           'meta_value' => array(
+                'key' => 'vendor_name', 
+                'value' => 234,
+    )));
+    $loop = get_posts($args);
+
+    // echo "<pre>";
+    // print_r($loop);
+    // echo "</pre>";
+
+   $html = '<div class="yoobi-vendor-list-section owl-carousel" id="yoobi-products-wrapper">';
+            if(!empty($loop)) 
+            {
+                foreach ($loop as $value) 
+                {
+                    $image = wp_get_attachment_image_src( get_post_thumbnail_id( $value->ID ), 'single-post-thumbnail' );
+                    $product = wc_get_product( $value->ID );
+                    $symbol = get_woocommerce_currency_symbol();
+                    $vendor_id = get_post_meta($value->ID, 'vendor_name' , true );
+                    $vendor_name = get_the_title($vendor_id);
+                        $html .='
+                                <div class="vendor-products-section">
+                                    <img src="'.$image[0].'">
+                                    <p class="vendor-name">'.$vendor_name.'</p>
+                                    <a href="'.get_permalink($value->ID).'" class="shop-product-title">'.$value->post_title.'</a>';
+                                    if(!empty($product->get_regular_price()))
+                                    {
+                                        $html .='<p class="shop-product-price">'.$symbol.$product->get_regular_price().'</p>';
+                                    }
+                        $html .='</div>';
+                } 
+            }
+    $html .= '</div>';
+    return $html;
+}
+
+
+/**
+* Penpillar Listing Shortcode In Shop
+*/
+add_shortcode('Penpillar-Vendor-Listing', 'penpillar_vendor_list_init');
+function penpillar_vendor_list_init(){
+    $args = array(
+        'post_type' => 'product',
+        'order' => 'ASC',
+        'meta_query' => array(
+           'meta_value' => array(
+                'key' => 'vendor_name', 
+                'value' => 236,
+    )));
+    $loop = get_posts($args);
+
+    // echo "<pre>";
+    // print_r($loop);
+    // echo "</pre>";
+
+   $html = '<div class="penpillar-vendor-list-section owl-carousel" id="penpillar-products-wrapper">';
+            if(!empty($loop)) 
+            {
+                foreach ($loop as $value) 
+                {
+                    $image = wp_get_attachment_image_src( get_post_thumbnail_id( $value->ID ), 'single-post-thumbnail' );
+                    $product = wc_get_product( $value->ID );
+                    $symbol = get_woocommerce_currency_symbol();
+                    $vendor_id = get_post_meta($value->ID, 'vendor_name' , true );
+                    $vendor_name = get_the_title($vendor_id);
+                        $html .='
+                                <div class="vendor-products-section">
+                                    <img src="'.$image[0].'">
+                                    <p class="vendor-name">'.$vendor_name.'</p>
+                                    <a href="'.get_permalink($value->ID).'" class="shop-product-title">'.$value->post_title.'</a>';
+                                    if(!empty($product->get_regular_price()))
+                                    {
+                                        $html .='<p class="shop-product-price">'.$symbol.$product->get_regular_price().'</p>';
+                                    }
+                        $html .='</div>';
+                } 
+            }
+    $html .= '</div>';
+    return $html;
+}
+
+
+
+/**
+* Hand in Hand Listing Shortcode In Shop
+*/
+add_shortcode('HandinHand-Vendor-Listing', 'handinhand_vendor_list_init');
+function handinhand_vendor_list_init(){
+    $args = array(
+        'post_type' => 'product',
+        'order' => 'ASC',
+        'meta_query' => array(
+           'meta_value' => array(
+                'key' => 'vendor_name', 
+                'value' => 238,
+    )));
+    $loop = get_posts($args);
+
+    // echo "<pre>";
+    // print_r($loop);
+    // echo "</pre>";
+
+   $html = '<div class="handinhand-vendor-list-section owl-carousel" id="handinhand-products-wrapper">';
+            if(!empty($loop)) 
+            {
+                foreach ($loop as $value) 
+                {
+                    $image = wp_get_attachment_image_src( get_post_thumbnail_id( $value->ID ), 'single-post-thumbnail' );
+                    $product = wc_get_product( $value->ID );
+                    $symbol = get_woocommerce_currency_symbol();
+                    $vendor_id = get_post_meta($value->ID, 'vendor_name' , true );
+                    $vendor_name = get_the_title($vendor_id);
+                        $html .='
+                                <div class="vendor-products-section">
+                                    <img src="'.$image[0].'">
+                                    <p class="vendor-name">'.$vendor_name.'</p>
+                                    <a href="'.get_permalink($value->ID).'" class="shop-product-title">'.$value->post_title.'</a>';
+                                    if(!empty($product->get_regular_price()))
+                                    {
+                                        $html .='<p class="shop-product-price">'.$symbol.$product->get_regular_price().'</p>';
+                                    }
+                        $html .='</div>';
+                } 
+            }
+    $html .= '</div>';
+    return $html;
+}
+
+
+
+/**
+* Vendor List in About the vendors page
+*/
+add_shortcode('Vendors-List', 'vendors_list_init');
+function vendors_list_init(){
+    $args = array(
+        'post_type'      => 'vendor',
+        'order' => 'DESC', 
+        'posts_per_page' => -1,
+        'meta_query'     =>
+        array(
+            'key'     => 'vendor_impacts',
+        ),       
+    );
+    $loop = get_posts($args);
+
+    $html = '<div class="vendors-list">
+            ';
+            if(!empty($loop)) 
+            {
+                foreach ($loop as $data) 
+                {  
+                    $impacts = get_post_meta( $data->ID, 'vendor_impacts', true );
+                    $html .= '<div class="product-content">
+                    			<div class="container">
+                    				<div class="row">
+                    					<div class="col-sm-3">
+                                			<h4><a href="'.get_permalink($data->ID).'">'.$data->post_title.'</a></h4>
+                             			</div>
+                             			<div class="col-sm-9">
+                             				<div class="row">';
+							                    if(!empty($impacts))
+							                    {
+							                        foreach ($impacts as $key => $value) 
+							                        {
+							                           $html .= '<div class="col-sm-4">
+							                           				<h4>'.get_the_title($value).'</h4>
+							                                        <p>'.get_the_excerpt($value).'</p>
+							                                    </div>';
+							                        } 
+							                    }
+                    							$html .= '
+                    						</div>';
+                    						$html .= '<a class="vendorLink" href="'.get_permalink($data->ID).'">Read More</a>';
+                    		  $html .= '</div>
+                    				</div>
+                    			</div>
+                    		</div>';
+                }
+            }
+    $html .='
+            </div>';
+    return $html;
+}
+
+
+/**
+* Vendor and its detail  Listing Slider Shortcode In Homepage
+*/
+add_shortcode('Vendor-Detail-Listing', 'vendor_detail_list_init');
+function vendor_detail_list_init(){
+    $args = array(
+        'post_type'      => 'vendor',
+        'order' => 'ASC', 
+        'posts_per_page' => -1,          
+    );
+    $loop = get_posts($args);
+
+   $html = '<div class="vendor-detail-list-section owl-carousel" id="vendor-detail-slide-list-wrapper">';
+            if(!empty($loop)) 
+            {
+                foreach ($loop as $data) 
+                {   
+                    $details = get_field('v_vendor_details', $data->ID);
+                    $vendor_profile_image = get_field('v_profile_pic', $data->ID);
+                    $vendor_followers = get_post_meta($data->ID,'vendor_followers', true);
+                    $html .='<div class="vendor-detail-slide-section">
+                                <div class="vendor-first-col">
+                                    <img src="'.get_the_post_thumbnail_url($data->ID).'">
+                                    <button class="vendor-follow" data-vendor="'.$data->ID.'" data-followers="'.$vendor_followers.'">FOLLOW</button>
+                                    <div class="vendor-followers-'.$data->ID.'">';
+                                          $initial_value = 0;
+                                          if(!empty($vendor_followers))
+                                          {
+                                            $html .= '<p>'.$vendor_followers.'<span> Followers</span></p>'; 
+                                          }
+                                          else
+                                          { 
+                                            $html .= '<p>'.$initial_value.'<span> Followers</span></p>';
+                                          }
+                         $html .= '</div>
+                                </div>
+
+                                <div class="vendor-second-col">';
+                                    if( !empty( $details ) ):
+                                        $html .=  '<p>'.$details.'</p>';
+                                    endif; 
+                                    $html .='<a href="'.get_the_permalink($data->ID).'">Learn More</a>
+                                </div>
+
+                                <div class="vendor-third-col">';
+                                    if( !empty( $vendor_profile_image ) ):
+                                        $html .='<img src="'.esc_url($vendor_profile_image['url']).'"/>';
+                                    endif; 
+                       $html .= '</div>
+                         </div>';
+                } 
+            }
+    $html .='</div>';
+    return $html;
+}
+
+/**
+* Vendor List in Category page - Shop Single
+*/
+add_shortcode('List-Of-Vendors', 'list_of_vendors_init');
+function list_of_vendors_init(){
+    $args = array(
+        'post_type'      => 'vendor',
+        'order' => 'DESC', 
+        'posts_per_page' => -1,          
+    );
+    $loop = get_posts($args);
+
+    $category = get_queried_object();
+    $cat_slug = $category->slug;
+    $cat_id = $category->term_id;
+
+   $html = '<div class="sidebar-list-section">
+            <ul>';
+            if(!empty($loop)) 
+            {
+                foreach ($loop as $data) 
+                {   
+                    //$token = $cat_slug.','.$data->ID;
+                    $vendor_token = $data->ID;
+                    $html .='<li><a href="'.home_url( '/' ).'product-category/'.$cat_slug.'?vendor_token='.$vendor_token.'">'.$data->post_title.'</a></li>';
+                } 
+            }
+    $html .='</ul>
+            </div>';
+    return $html;
+}
+
+
+
+
+
+>>>>>>> edcc9816c429b5664f141e361560830f6738cf2c
 =======
 <<<<<<< HEAD
 <?php
