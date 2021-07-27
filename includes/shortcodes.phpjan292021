@@ -1,0 +1,1558 @@
+<<<<<<< HEAD
+<?php
+
+/**
+* Vendor List Slide Shortcode In Homepage and Shop Page
+*/
+add_shortcode('Vendor-Listing', 'vendor_list_init');
+function vendor_list_init($atts){
+    $args = array(
+        'post_type'      => 'vendor',
+        'order' => 'ASC', 
+        'posts_per_page' => 4,          
+    );
+    $loop = get_posts($args);
+
+   $html = '<div class="vendor-list-section owl-carousel" id="vendor-slide-list-wrapper">';
+            if(!empty($loop)) 
+            {
+                foreach ($loop as $data) 
+                {
+                    $html .='<div class="vendor-slide-section">
+                                <img src="'.get_the_post_thumbnail_url($data->ID).'">
+                             </div>';
+                } 
+            }
+    $html .='</div>';
+    return $html;
+}
+
+
+
+/**
+* Starfish Project Listing Shortcode In Shop
+*/
+add_shortcode('StarfishProject-Vendor-Listing', 'starfish_vendor_list_init');
+function starfish_vendor_list_init(){
+   /* $args = array(
+        'post_type' => 'product',
+        'order' => 'ASC',
+        'meta_query' => array(
+           'meta_value' => array(
+                'key' => 'vendor_name', 
+                'value' => 232,
+    ))); */
+    return vendor_list_shortcode_init(array('vendor' => '232'));
+}
+
+
+/**
+* Yoobi Listing Shortcode In Shop
+*/
+add_shortcode('Yoobi-Vendor-Listing', 'yoobi_vendor_list_init');
+function yoobi_vendor_list_init(){
+    /*$args = array(
+        'post_type' => 'product',
+        'order' => 'ASC',
+        'meta_query' => array(
+           'meta_value' => array(
+                'key' => 'vendor_name', 
+                'value' => 234,
+    ))); */
+    return vendor_list_shortcode_init(array('vendor' => '234'));
+}
+
+
+/**
+* Penpillar Listing Shortcode In Shop
+*/
+add_shortcode('Penpillar-Vendor-Listing', 'penpillar_vendor_list_init');
+function penpillar_vendor_list_init(){
+    /* $args = array(
+        'post_type' => 'product',
+        'order' => 'ASC',
+        'meta_query' => array(
+           'meta_value' => array(
+                'key' => 'vendor_name', 
+                'value' => 236,
+    )));
+   */
+    return vendor_list_shortcode_init(array('vendor' => '236'));
+}
+
+
+
+/**
+* Hand in Hand Listing Shortcode In Shop
+*/
+add_shortcode('HandinHand-Vendor-Listing', 'handinhand_vendor_list_init');
+function handinhand_vendor_list_init(){
+   /* $args = array(
+        'post_type' => 'product',
+        'order' => 'ASC',
+        'meta_query' => array(
+           'meta_value' => array(
+                'key' => 'vendor_name', 
+                'value' => 238,
+    ))); */
+    return vendor_list_shortcode_init(array('vendor' => '238'));
+}
+
+
+add_shortcode('Vendor-Listing-byID', 'vendor_list_shortcode_init');
+function vendor_list_shortcode_init($atts){
+    global $wpdb;
+    $html = '';
+    if (!empty($atts['vendor'])) {
+        $args = array(
+            'post_type' => 'product',
+            'order' => 'ASC',
+            'posts_per_page' => -1,    
+            'meta_query' => array(
+                'meta_value' => array(
+                    'key' => 'vendor_name', 
+                    'value' => $atts['vendor'],
+                )
+            )
+        );
+    } else {
+        $args = array(
+            'post_type' => 'product',
+            'order' => 'ASC'
+        );
+    }
+    $loop = get_posts($args);
+    $table_name = $wpdb->prefix . "likes_tracking";
+    $html = '<div class="vendor-list-products-section" id="products-wrapper"><div class="container"><div class="row">';
+
+            if(!empty($loop)) 
+            {
+                foreach ($loop as $value) 
+                {
+                    
+                    $image = wp_get_attachment_image_src( get_post_thumbnail_id( $value->ID ), 'single-post-thumbnail' );
+                    $product = wc_get_product( $value->ID );
+                    $symbol = get_woocommerce_currency_symbol();
+                    $vendor_id = get_post_meta($value->ID, 'vendor_name' , true );
+                    $vendor_name = get_the_title($vendor_id); 
+                    $product_likes = get_post_meta($value->ID, 'like' , true); 
+                    $user_id = get_current_user_id();
+                    $pro_id = $value->ID;
+                    $results = $wpdb->get_results("SELECT trackid FROM $table_name WHERE product_id = $pro_id AND user_id = $user_id");
+                    $v_image = !empty($image[0]) ? $image[0] : VENDOR_PROD_PLACEHOLDER;
+                    $html .= '<div class="col-sm-3">
+                            <div class="vendorProduct_wrap">
+                                <div class="vendor-fb-like">
+                                    <button class="product-like thumbid-'.$value->ID.'" data-product="'.$value->ID.'" data-likes="'.$product_likes.'" data-user="'.$user_id.'">';
+                                        if (count($results)> 0) {
+                                            $icon = '<i class="fas fa-thumbs-up"></i>';
+                                        }  else {
+                                            $icon = '<i class="far fa-thumbs-up"></i>';
+                                        }
+                                    $html .= '<p class="likes-add-'.$value->ID.'">';
+                                            $initial_value = 0;
+                                            if(!empty($product_likes))  {
+                                                $html .= $product_likes; 
+                                            }  else  { 
+                                                $html .= $initial_value;
+                                            }
+                                    $html .= ' '.$icon.' </p>';
+                                    $html .= '</button>
+                                </div>
+                                <img src="'.$v_image.'">
+                                <p class="vendor-name">'.$vendor_name.'</p>
+                                <a href="'.get_permalink($value->ID).'" class="shop-product-title">'.$value->post_title.'</a>';
+                                if(!empty($product->get_regular_price())){ 
+                                    $html .= '<p class="shop-product-price">'.$symbol.$product->get_regular_price().'</p>';
+                                }
+                                $html .= '</div>
+                        </div>';
+                        // echo "<br><br>";
+                        // print_r($html);
+                } 
+            }
+    $html .= '</div></div></div>';
+ //print_r($html);
+    return $html;
+}
+
+
+/**
+* Vendor List in About the vendors page
+*/
+add_shortcode('Vendors-List-by-Impact', 'vendors_list_init');
+function vendors_list_init(){
+    $args = array(
+        'post_type'      => 'vendor',
+        'order' => 'DESC', 
+        'posts_per_page' => -1,
+        'meta_query'     =>
+        array(
+            'key'     => 'vendor_impacts',
+        ),       
+    );
+    $loop = get_posts($args);
+
+    $html = '<div class="vendors-list">
+            ';
+            if(!empty($loop)) 
+            {
+                foreach ($loop as $data) 
+                {  
+                    $impacts = get_post_meta( $data->ID, 'vendor_impacts', true );
+                    $html .= '<div class="product-content">
+                    			<div class="container">
+                    				<div class="row">
+                    					<div class="col-sm-3">
+                                			<h4><a href="'.get_permalink($data->ID).'">'.$data->post_title.'</a></h4>
+                             			</div>
+                             			<div class="col-sm-9">
+                             				<div class="row">';
+							                    if(!empty($impacts))
+							                    {
+							                        foreach ($impacts as $key => $value) 
+							                        {
+							                           $html .= '<div class="col-sm-4">
+							                           				<h4>'.get_the_title($value).'</h4>
+							                                        <p>'.get_the_excerpt($value).'</p>
+							                                    </div>';
+							                        } 
+							                    }
+                    							$html .= '
+                    						</div>';
+                    						$html .= '<a class="vendorLink" href="'.get_permalink($data->ID).'">Read More</a>';
+                    		  $html .= '</div>
+                    				</div>
+                    			</div>
+                    		</div>';
+                }
+            }
+    $html .='
+            </div>';
+    return $html;
+}
+
+/**
+* Vendor and its detail  Listing Slider Shortcode In Homepage
+*/
+add_shortcode('Vendor-Detail-Listing', 'vendor_detail_list_init');
+function vendor_detail_list_init(){
+    global $wpdb;
+    $args = array(
+        'post_type'      => 'vendor',
+        'order' => 'ASC', 
+        'posts_per_page' => -1,          
+    );
+    $loop = get_posts($args);
+    $table_name = $wpdb->prefix . "vendor_likes";   
+
+   $html = '<div class="vendor-detail-list-section owl-carousel" id="vendor-detail-slide-list-wrapper">';
+            if(!empty($loop)) 
+            {
+                foreach ($loop as $data) 
+                {   
+                    $details = get_field('v_vendor_details', $data->ID);
+                    $vendor_profile_image = get_field('v_profile_pic', $data->ID);
+                    $vendor_followers = get_post_meta($data->ID,'vendor_followers', true);
+                    $large_image_url = wp_get_attachment_image_src( get_post_thumbnail_id($data->ID), 'large');
+                    $large_image_url = !empty($large_image_url) ? $large_image_url : '';
+                    $vendor_likes = get_post_meta($data->ID, 'vendor_like' , true); 
+                    $user_id = get_current_user_id();
+                    $results = $wpdb->get_results("SELECT trackid FROM $table_name WHERE vendor_id = $data->ID AND user_id = $user_id");
+                   
+                    $html .='<div class="vendor-detail-slide-section">
+                                <div class="vendor-first-col">
+                                    <img src="'.$large_image_url[0].'">                                     
+                                    <div class="vendor-fb-like">
+                                        <button class="vendor-like thumbid-'.$data->ID.'" data-vendor="'.$data->ID.'" data-likes="'.$vendor_likes.'" data-user="'.$user_id.'">';
+                                            if (count($results)> 0) {
+                                                $icon = '<i class="fas fa-thumbs-up"></i>';
+                                            }  else {
+                                                $icon = '<i class="far fa-thumbs-up"></i>';
+                                            }
+                                        $html .= '<div class="likes-vendor-add-'.$data->ID.'">';
+                                                $initial_value = 0;
+                                                if(!empty($vendor_likes))  {
+                                                    $html .= $vendor_likes; 
+                                                }  else  { 
+                                                    $html .= $initial_value;
+                                                }
+                                        $html .= ' '.$icon.'</div>';
+                                        $html .= '</button>
+                                    </div>                                  
+                                    <div class="ven-followers vendor-followers-'.$data->ID.'">
+                                        <button class="vendor-follow" data-vendor="'.$data->ID.'" data-followers="'.$vendor_followers.'">';
+                                          $initial_value = 0;
+                                          if(!empty($vendor_followers))
+                                          {
+                                            $html .= '<p><i class="fas fa-users"></i> '.$vendor_followers.'</p>'; 
+                                          }
+                                          else
+                                          { 
+                                            $html .= '<p><i class="fas fa-users"></i> '.$initial_value.'</p>';
+                                          }
+                                          $html .= '</button>';
+                         $html .= '</div>
+                                </div>
+
+                                <div class="vendor-second-col">';
+                                    if( !empty( $details ) ):
+                                        $html .=  '<p>'.$details.'</p>';
+                                    endif; 
+                                    $html .='<a href="'.get_the_permalink($data->ID).'">Learn More</a>
+                                </div>
+
+                                <div class="vendor-third-col">';
+                                    if( !empty( $vendor_profile_image ) ):
+                                        $html .='<img src="'.esc_url($vendor_profile_image['url']).'"/>';
+                                    endif; 
+                       $html .= '</div>
+                         </div>';
+                } 
+            }
+    $html .='</div>';
+    return $html;
+}
+/**
+* Vendor List in Category page - Shop Single
+*/
+add_shortcode('List-Of-Vendors', 'list_of_vendors_init');
+function list_of_vendors_init(){
+    $args = array(
+        'post_type'      => 'vendor',
+        'order' => 'DESC', 
+        'posts_per_page' => -1,          
+    );
+    $loop = get_posts($args);
+
+    $category = get_queried_object();
+    $cat_slug = $category->slug;
+    $cat_id = $category->term_id;
+
+   $html = '<div class="sidebar-list-section">
+            <ul>';
+            if(!empty($loop)) 
+            {
+                foreach ($loop as $data) 
+                {   
+                    //$token = $cat_slug.','.$data->ID;
+                    $vendor_token = $data->ID;
+                    $url = home_url( '/' ).'vendor/'.$data->post_name;
+                    //$html .='<li><a href="'.home_url( '/' ).'product-category/'.$cat_slug.'?vendor_token='.$vendor_token.'">'.$data->post_title.'</a></li>';
+                    $html .='<li><a href="'.$url.'">'.$data->post_title.'</a></li>';
+                } 
+            }
+    $html .='</ul>
+            </div>';
+    return $html;
+}
+
+
+add_shortcode('Vendors-List-Boxed', 'vendors_list_box_init');
+function vendors_list_box_init(){
+    global $wpdb;
+    $args = array(
+        'post_type'      => 'vendor',
+        'order' => 'ASC', 
+        'posts_per_page' => -1,          
+    );
+    $loop = get_posts($args);
+    $table_name = $wpdb->prefix . "vendor_likes";
+    $html = '<div class="vendor-list-products-section" id="products-wrapper"><div class="container"><div class="row">';
+            if(!empty($loop)) 
+            {
+                foreach ($loop as $value) 
+                {
+                    $vendor_likes = get_post_meta($value->ID, 'vendor_like' , true); 
+                    $user_id = get_current_user_id();
+                    $vendor_id = $value->ID;
+                    $vendor_name = get_the_title($vendor_id); 
+                    $results = $wpdb->get_results("SELECT trackid FROM $table_name WHERE vendor_id = $vendor_id AND user_id = $user_id");
+                    
+                    $html .='<div class="col-sm-3">
+                            <div class="vendor_wrap">
+                                <div class="vendor-fb-like">
+                                    <button class="vendor-like thumbid-'.$value->ID.'" data-vendor="'.$value->ID.'" data-likes="'.$vendor_likes.'" data-user="'.$user_id.'">';
+                                        if (count($results)> 0) {
+                                            $icon = '<i class="fas fa-thumbs-up"></i>';
+                                        }  else {
+                                            $icon = '<i class="far fa-thumbs-up"></i>';
+                                        }
+                                    $html .= '<div class="likes-vendor-add-'.$value->ID.'">';
+                                            $initial_value = 0;
+                                            if(!empty($vendor_likes))  {
+                                                $html .= $vendor_likes; 
+                                            }  else  { 
+                                                $html .= $initial_value;
+                                            }
+                                    $html .= ' '.$icon.'</div>';
+                                    $html .= '</button>
+                                </div>
+                                <img src="'.get_the_post_thumbnail_url($value->ID).'">
+                                <p class="vendor-name">'.$vendor_name.'</p>
+                                <br>
+                               <a class="vendorLink" href="'.get_the_permalink($value->ID).'">Learn More</a>
+                             </div></div>';
+                } 
+            }
+    $html .='</div></div></div>';
+    return $html;
+}
+/**
+* Vendor and its detail  Listing Slider Shortcode In Homepage
+*/
+add_shortcode('Vendor-Detail-slider-Listing', 'vendor_detail_slider_list_init');
+function vendor_detail_slider_list_init(){
+    global $wpdb;
+    $args = array(
+        'post_type'      => 'vendor',
+        'order' => 'ASC', 
+        'posts_per_page' => -1,          
+    );
+    $loop = get_posts($args);
+    $table_name = $wpdb->prefix . "vendor_likes";
+   $html = '<div class="vendor-detail-slider-list-section owl-carousel" id="vendor-detail-slider-list-wrapper">';
+            if(!empty($loop)) 
+            {
+                foreach ($loop as $data) 
+                {   
+                    //$details = get_field('v_vendor_details', $data->ID);
+                    //$vendor_profile_image = get_field('v_profile_pic', $data->ID);
+                    $vendor_followers = get_post_meta($data->ID,'vendor_followers', true);
+                    $image = get_the_post_thumbnail_url($data->ID);
+                    $large_image_url = wp_get_attachment_image_src( get_post_thumbnail_id($data->ID), 'large');
+                    $large_image_url = !empty($large_image_url) ? $large_image_url : '';
+                    $vendor_likes = get_post_meta($data->ID, 'vendor_like' , true); 
+                    $user_id = get_current_user_id();
+                    $results = $wpdb->get_results("SELECT trackid FROM $table_name WHERE vendor_id = $data->ID AND user_id = $user_id");
+                   
+                    //print_r($large_image_url );
+                    $html .='<div class="vendor-detail-slider-section" xxstyle="background-image:url('.$large_image_url[0].')">
+                            
+                    <div class="vendor-col">
+                        <a href="'.get_permalink($data->ID).'"><img style="object-fit: contain; position: absolute; height:300px; left:0px;" src="'.$large_image_url[0].'"></a>
+                        <div class="vendor-fb-like">
+                            <button class="vendor-like thumbid-'.$data->ID.'" data-vendor="'.$data->ID.'" data-likes="'.$vendor_likes.'" data-user="'.$user_id.'">';
+                                
+                                if (count($results)> 0) {
+                                    $icon = '<i class="fas fa-thumbs-up"></i>';
+                                }  else {
+                                    $icon = '<i class="far fa-thumbs-up"></i>';
+                                }
+                                $html .= '<div class="likes-vendor-add-'.$data->ID.'">';
+                                        $initial_value = 0;
+                                        if(!empty($vendor_likes))  {
+                                            $html .= $vendor_likes; 
+                                        }  else  { 
+                                            $html .= $initial_value;
+                                        }
+                                $html .= ' '.$icon.'</div>';
+                            $html .= '</button>
+                        </div>
+                        <div class="ven-followers vendor-followers-'.$data->ID.'">
+                            <button class="vendor-follow" data-vendor="'.$data->ID.'" data-followers="'.$vendor_followers.'">';
+                                $initial_value = 0;
+                                if(!empty($vendor_followers))
+                                {
+                                $html .= '<p><i class="fas fa-users"></i> '.$vendor_followers.'</p>'; 
+                                }
+                                else
+                                { 
+                                $html .= '<p><i class="fas fa-users"></i> '.$initial_value.'</p>';
+                                }
+                                $html .= '</button>';
+                    $html .= '</div>
+                
+                    </div>
+                </div>';
+                } 
+            }
+    $html .='</div>';
+    return $html;
+}
+/**
+* Vendor and its detail  on Product Details
+*/
+add_shortcode('Vendor-Featured-Image-Round', 'vendor_image_round');
+function vendor_image_round(){
+    global $product;
+   // var_dump($product->get_id());  
+    if ( empty( $product->get_id() ) ) return '';  
+    $vendor_id = get_post_meta($product->get_id() , 'vendor_name' , true );
+    $image = get_the_post_thumbnail_url($vendor_id);
+    $large_image_url = wp_get_attachment_image_src( get_post_thumbnail_id($vendor_id), 'large');
+    $large_image_url = !empty($large_image_url) ? $large_image_url : '';  
+    $html ='<div class="vendor-profile-image">'; 
+    $html .='<a href="'.get_permalink($vendor_id).'"><img style="object-fit: contain; position: absolute; height:300px; left:0px;" src="'.$large_image_url[0].'"></a>';
+    $html .='</div>';
+    return $html;
+}
+
+/**
+* Vendor name excerpt and high  on Product Details
+*/
+add_shortcode('Vendor-Details-Prod', 'vendor_details_for_proddetails');
+function vendor_details_for_proddetails(){
+    global $product;
+   // var_dump($product->get_id());  
+    if ( empty( $product->get_id() ) ) return '';  
+    $vendor_id = get_post_meta($product->get_id() , 'vendor_name' , true );
+    $image = get_the_post_thumbnail_url($vendor_id);
+    $large_image_url = wp_get_attachment_image_src( get_post_thumbnail_id($vendor_id), 'large');
+    $large_image_url = !empty($large_image_url) ? $large_image_url : '';  
+    $vendor_name = get_the_title($vendor_id);
+    $vendor_followers = get_post_meta($vendor_id,'vendor_followers', true);
+    $user_id = get_current_user_id();
+    $vendor_likes = get_post_meta($vendor_id, 'vendor_like' , true); 
+    $html ='<div class="vendor-profile-details">'; 
+    $html .='<h5>'.$vendor_name.'</h5>';
+    $html .='<div class="vendorexcerpt">'. wp_strip_all_tags(get_the_excerpt($vendor_id)).'</div>';
+    $html .='<p><a href="'.get_permalink($vendor_id).'" class="vendorLink">Vendor Details</a></p>';
+    $html .='<div class="vendorexcerpt">';
+    $html .='<div class="vendorhighfive"><button class="vendor-like thumbid-'.$vendor_id.'" data-vendor="'.$vendor_id.'" data-likes="'.$vendor_likes.'" data-user="'.$user_id.'"><i class="fas fa-thumbs-up"></i></button> Give a High Five</div>';
+    $html .='<div class="vendorfollow"><button class="vendor-follow" data-vendor="'.$vendor_id.'" data-followers="'.$vendor_followers.'"><i class="fas fa-users"></i></button> Follow</div>';
+    $html .='</div>';
+    $html .='</div>';
+    return $html;
+}
+
+=======
+<<<<<<< HEAD
+<?php
+
+/**
+* Vendor List Slide Shortcode In Homepage and Shop Page
+*/
+add_shortcode('Vendor-Listing', 'vendor_list_init');
+function vendor_list_init($atts){
+    $args = array(
+        'post_type'      => 'vendor',
+        'order' => 'ASC', 
+        'posts_per_page' => 4,          
+    );
+    $loop = get_posts($args);
+
+   $html = '<div class="vendor-list-section owl-carousel" id="vendor-slide-list-wrapper">';
+            if(!empty($loop)) 
+            {
+                foreach ($loop as $data) 
+                {
+                    $html .='<div class="vendor-slide-section">
+                                <img src="'.get_the_post_thumbnail_url($data->ID).'">
+                             </div>';
+                } 
+            }
+    $html .='</div>';
+    return $html;
+}
+
+
+
+/**
+* Starfish Project Listing Shortcode In Shop
+*/
+add_shortcode('StarfishProject-Vendor-Listing', 'starfish_vendor_list_init');
+function starfish_vendor_list_init(){
+   /* $args = array(
+        'post_type' => 'product',
+        'order' => 'ASC',
+        'meta_query' => array(
+           'meta_value' => array(
+                'key' => 'vendor_name', 
+                'value' => 232,
+    ))); */
+    return vendor_list_shortcode_init(array('vendor' => '232'));
+}
+
+
+/**
+* Yoobi Listing Shortcode In Shop
+*/
+add_shortcode('Yoobi-Vendor-Listing', 'yoobi_vendor_list_init');
+function yoobi_vendor_list_init(){
+    /*$args = array(
+        'post_type' => 'product',
+        'order' => 'ASC',
+        'meta_query' => array(
+           'meta_value' => array(
+                'key' => 'vendor_name', 
+                'value' => 234,
+    ))); */
+    return vendor_list_shortcode_init(array('vendor' => '234'));
+}
+
+
+/**
+* Penpillar Listing Shortcode In Shop
+*/
+add_shortcode('Penpillar-Vendor-Listing', 'penpillar_vendor_list_init');
+function penpillar_vendor_list_init(){
+    /* $args = array(
+        'post_type' => 'product',
+        'order' => 'ASC',
+        'meta_query' => array(
+           'meta_value' => array(
+                'key' => 'vendor_name', 
+                'value' => 236,
+    )));
+   */
+    return vendor_list_shortcode_init(array('vendor' => '236'));
+}
+
+
+
+/**
+* Hand in Hand Listing Shortcode In Shop
+*/
+add_shortcode('HandinHand-Vendor-Listing', 'handinhand_vendor_list_init');
+function handinhand_vendor_list_init(){
+   /* $args = array(
+        'post_type' => 'product',
+        'order' => 'ASC',
+        'meta_query' => array(
+           'meta_value' => array(
+                'key' => 'vendor_name', 
+                'value' => 238,
+    ))); */
+    return vendor_list_shortcode_init(array('vendor' => '238'));
+}
+
+
+add_shortcode('Vendor-Listing-byID', 'vendor_list_shortcode_init');
+function vendor_list_shortcode_init($atts){
+    global $wpdb;
+    $html = '';
+    if (!empty($atts['vendor'])) {
+        $args = array(
+            'post_type' => 'product',
+            'order' => 'ASC',
+            'posts_per_page' => -1,    
+            'meta_query' => array(
+                'meta_value' => array(
+                    'key' => 'vendor_name', 
+                    'value' => $atts['vendor'],
+                )
+            )
+        );
+    } else {
+        $args = array(
+            'post_type' => 'product',
+            'order' => 'ASC'
+        );
+    }
+    $loop = get_posts($args);
+    $table_name = $wpdb->prefix . "likes_tracking";
+    $html = '<div class="vendor-list-products-section" id="products-wrapper"><div class="container"><div class="row">';
+
+            if(!empty($loop)) 
+            {
+                foreach ($loop as $value) 
+                {
+                    
+                    $image = wp_get_attachment_image_src( get_post_thumbnail_id( $value->ID ), 'single-post-thumbnail' );
+                    $product = wc_get_product( $value->ID );
+                    $symbol = get_woocommerce_currency_symbol();
+                    $vendor_id = get_post_meta($value->ID, 'vendor_name' , true );
+                    $vendor_name = get_the_title($vendor_id); 
+                    $product_likes = get_post_meta($value->ID, 'like' , true); 
+                    $user_id = get_current_user_id();
+                    $pro_id = $value->ID;
+                    $results = $wpdb->get_results("SELECT trackid FROM $table_name WHERE product_id = $pro_id AND user_id = $user_id");
+                    $v_image = !empty($image[0]) ? $image[0] : VENDOR_PROD_PLACEHOLDER;
+                    $html .= '<div class="col-sm-3">
+                            <div class="vendorProduct_wrap">
+                                <div class="vendor-fb-like">
+                                    <button class="product-like thumbid-'.$value->ID.'" data-product="'.$value->ID.'" data-likes="'.$product_likes.'" data-user="'.$user_id.'">';
+                                        if (count($results)> 0) {
+                                            $icon = '<i class="fas fa-thumbs-up"></i>';
+                                        }  else {
+                                            $icon = '<i class="far fa-thumbs-up"></i>';
+                                        }
+                                    $html .= '<p class="likes-add-'.$value->ID.'">';
+                                            $initial_value = 0;
+                                            if(!empty($product_likes))  {
+                                                $html .= $product_likes; 
+                                            }  else  { 
+                                                $html .= $initial_value;
+                                            }
+                                    $html .= ' '.$icon.' </p>';
+                                    $html .= '</button>
+                                </div>
+                                <img src="'.$v_image.'">
+                                <p class="vendor-name">'.$vendor_name.'</p>
+                                <a href="'.get_permalink($value->ID).'" class="shop-product-title">'.$value->post_title.'</a>';
+                                if(!empty($product->get_regular_price())){ 
+                                    $html .= '<p class="shop-product-price">'.$symbol.$product->get_regular_price().'</p>';
+                                }
+                                $html .= '</div>
+                        </div>';
+                        // echo "<br><br>";
+                        // print_r($html);
+                } 
+            }
+    $html .= '</div></div></div>';
+ //print_r($html);
+    return $html;
+}
+
+
+/**
+* Vendor List in About the vendors page
+*/
+add_shortcode('Vendors-List-by-Impact', 'vendors_list_init');
+function vendors_list_init(){
+    $args = array(
+        'post_type'      => 'vendor',
+        'order' => 'DESC', 
+        'posts_per_page' => -1,
+        'meta_query'     =>
+        array(
+            'key'     => 'vendor_impacts',
+        ),       
+    );
+    $loop = get_posts($args);
+
+    $html = '<div class="vendors-list">
+            ';
+            if(!empty($loop)) 
+            {
+                foreach ($loop as $data) 
+                {  
+                    $impacts = get_post_meta( $data->ID, 'vendor_impacts', true );
+                    $html .= '<div class="product-content">
+                    			<div class="container">
+                    				<div class="row">
+                    					<div class="col-sm-3">
+                                			<h4><a href="'.get_permalink($data->ID).'">'.$data->post_title.'</a></h4>
+                             			</div>
+                             			<div class="col-sm-9">
+                             				<div class="row">';
+							                    if(!empty($impacts))
+							                    {
+							                        foreach ($impacts as $key => $value) 
+							                        {
+							                           $html .= '<div class="col-sm-4">
+							                           				<h4>'.get_the_title($value).'</h4>
+							                                        <p>'.get_the_excerpt($value).'</p>
+							                                    </div>';
+							                        } 
+							                    }
+                    							$html .= '
+                    						</div>';
+                    						$html .= '<a class="vendorLink" href="'.get_permalink($data->ID).'">Read More</a>';
+                    		  $html .= '</div>
+                    				</div>
+                    			</div>
+                    		</div>';
+                }
+            }
+    $html .='
+            </div>';
+    return $html;
+}
+
+/**
+* Vendor and its detail  Listing Slider Shortcode In Homepage
+*/
+add_shortcode('Vendor-Detail-Listing', 'vendor_detail_list_init');
+function vendor_detail_list_init(){
+    global $wpdb;
+    $args = array(
+        'post_type'      => 'vendor',
+        'order' => 'ASC', 
+        'posts_per_page' => -1,          
+    );
+    $loop = get_posts($args);
+    $table_name = $wpdb->prefix . "vendor_likes";   
+
+   $html = '<div class="vendor-detail-list-section owl-carousel" id="vendor-detail-slide-list-wrapper">';
+            if(!empty($loop)) 
+            {
+                foreach ($loop as $data) 
+                {   
+                    $details = get_field('v_vendor_details', $data->ID);
+                    $vendor_profile_image = get_field('v_profile_pic', $data->ID);
+                    $vendor_followers = get_post_meta($data->ID,'vendor_followers', true);
+                    $large_image_url = wp_get_attachment_image_src( get_post_thumbnail_id($data->ID), 'large');
+                    $large_image_url = !empty($large_image_url) ? $large_image_url : '';
+                    $vendor_likes = get_post_meta($data->ID, 'vendor_like' , true); 
+                    $user_id = get_current_user_id();
+                    $results = $wpdb->get_results("SELECT trackid FROM $table_name WHERE vendor_id = $data->ID AND user_id = $user_id");
+                   
+                    $html .='<div class="vendor-detail-slide-section">
+                                <div class="vendor-first-col">
+                                    <img src="'.$large_image_url[0].'">                                     
+                                    <div class="vendor-fb-like">
+                                        <button class="vendor-like thumbid-'.$data->ID.'" data-vendor="'.$data->ID.'" data-likes="'.$vendor_likes.'" data-user="'.$user_id.'">';
+                                            if (count($results)> 0) {
+                                                $icon = '<i class="fas fa-thumbs-up"></i>';
+                                            }  else {
+                                                $icon = '<i class="far fa-thumbs-up"></i>';
+                                            }
+                                        $html .= '<div class="likes-vendor-add-'.$data->ID.'">';
+                                                $initial_value = 0;
+                                                if(!empty($vendor_likes))  {
+                                                    $html .= $vendor_likes; 
+                                                }  else  { 
+                                                    $html .= $initial_value;
+                                                }
+                                        $html .= ' '.$icon.'</div>';
+                                        $html .= '</button>
+                                    </div>                                  
+                                    <div class="ven-followers vendor-followers-'.$data->ID.'">
+                                        <button class="vendor-follow" data-vendor="'.$data->ID.'" data-followers="'.$vendor_followers.'">';
+                                          $initial_value = 0;
+                                          if(!empty($vendor_followers))
+                                          {
+                                            $html .= '<p><i class="fas fa-users"></i> '.$vendor_followers.'</p>'; 
+                                          }
+                                          else
+                                          { 
+                                            $html .= '<p><i class="fas fa-users"></i> '.$initial_value.'</p>';
+                                          }
+                                          $html .= '</button>';
+                         $html .= '</div>
+                                </div>
+
+                                <div class="vendor-second-col">';
+                                    if( !empty( $details ) ):
+                                        $html .=  '<p>'.$details.'</p>';
+                                    endif; 
+                                    $html .='<a href="'.get_the_permalink($data->ID).'">Learn More</a>
+                                </div>
+
+                                <div class="vendor-third-col">';
+                                    if( !empty( $vendor_profile_image ) ):
+                                        $html .='<img src="'.esc_url($vendor_profile_image['url']).'"/>';
+                                    endif; 
+                       $html .= '</div>
+                         </div>';
+                } 
+            }
+    $html .='</div>';
+    return $html;
+}
+/**
+* Vendor List in Category page - Shop Single
+*/
+add_shortcode('List-Of-Vendors', 'list_of_vendors_init');
+function list_of_vendors_init(){
+    $args = array(
+        'post_type'      => 'vendor',
+        'order' => 'DESC', 
+        'posts_per_page' => -1,          
+    );
+    $loop = get_posts($args);
+
+    $category = get_queried_object();
+    $cat_slug = $category->slug;
+    $cat_id = $category->term_id;
+
+   $html = '<div class="sidebar-list-section">
+            <ul>';
+            if(!empty($loop)) 
+            {
+                foreach ($loop as $data) 
+                {   
+                    //$token = $cat_slug.','.$data->ID;
+                    $vendor_token = $data->ID;
+                    $url = home_url( '/' ).'vendor/'.$data->post_name;
+                    //$html .='<li><a href="'.home_url( '/' ).'product-category/'.$cat_slug.'?vendor_token='.$vendor_token.'">'.$data->post_title.'</a></li>';
+                    $html .='<li><a href="'.$url.'">'.$data->post_title.'</a></li>';
+                } 
+            }
+    $html .='</ul>
+            </div>';
+    return $html;
+}
+
+
+add_shortcode('Vendors-List-Boxed', 'vendors_list_box_init');
+function vendors_list_box_init(){
+    global $wpdb;
+    $args = array(
+        'post_type'      => 'vendor',
+        'order' => 'ASC', 
+        'posts_per_page' => -1,          
+    );
+    $loop = get_posts($args);
+    $table_name = $wpdb->prefix . "vendor_likes";
+    $html = '<div class="vendor-list-products-section" id="products-wrapper"><div class="container"><div class="row">';
+            if(!empty($loop)) 
+            {
+                foreach ($loop as $value) 
+                {
+                    $vendor_likes = get_post_meta($value->ID, 'vendor_like' , true); 
+                    $user_id = get_current_user_id();
+                    $vendor_id = $value->ID;
+                    $vendor_name = get_the_title($vendor_id); 
+                    $results = $wpdb->get_results("SELECT trackid FROM $table_name WHERE vendor_id = $vendor_id AND user_id = $user_id");
+                    
+                    $html .='<div class="col-sm-3">
+                            <div class="vendor_wrap">
+                                <div class="vendor-fb-like">
+                                    <button class="vendor-like thumbid-'.$value->ID.'" data-vendor="'.$value->ID.'" data-likes="'.$vendor_likes.'" data-user="'.$user_id.'">';
+                                        if (count($results)> 0) {
+                                            $icon = '<i class="fas fa-thumbs-up"></i>';
+                                        }  else {
+                                            $icon = '<i class="far fa-thumbs-up"></i>';
+                                        }
+                                    $html .= '<div class="likes-vendor-add-'.$value->ID.'">';
+                                            $initial_value = 0;
+                                            if(!empty($vendor_likes))  {
+                                                $html .= $vendor_likes; 
+                                            }  else  { 
+                                                $html .= $initial_value;
+                                            }
+                                    $html .= ' '.$icon.'</div>';
+                                    $html .= '</button>
+                                </div>
+                                <img src="'.get_the_post_thumbnail_url($value->ID).'">
+                                <p class="vendor-name">'.$vendor_name.'</p>
+                                <br>
+                               <a class="vendorLink" href="'.get_the_permalink($value->ID).'">Learn More</a>
+                             </div></div>';
+                } 
+            }
+    $html .='</div></div></div>';
+    return $html;
+}
+/**
+* Vendor and its detail  Listing Slider Shortcode In Homepage
+*/
+add_shortcode('Vendor-Detail-slider-Listing', 'vendor_detail_slider_list_init');
+function vendor_detail_slider_list_init(){
+    global $wpdb;
+    $args = array(
+        'post_type'      => 'vendor',
+        'order' => 'ASC', 
+        'posts_per_page' => -1,          
+    );
+    $loop = get_posts($args);
+    $table_name = $wpdb->prefix . "vendor_likes";
+   $html = '<div class="vendor-detail-slider-list-section owl-carousel" id="vendor-detail-slider-list-wrapper">';
+            if(!empty($loop)) 
+            {
+                foreach ($loop as $data) 
+                {   
+                    //$details = get_field('v_vendor_details', $data->ID);
+                    //$vendor_profile_image = get_field('v_profile_pic', $data->ID);
+                    $vendor_followers = get_post_meta($data->ID,'vendor_followers', true);
+                    $image = get_the_post_thumbnail_url($data->ID);
+                    $large_image_url = wp_get_attachment_image_src( get_post_thumbnail_id($data->ID), 'large');
+                    $large_image_url = !empty($large_image_url) ? $large_image_url : '';
+                    $vendor_likes = get_post_meta($data->ID, 'vendor_like' , true); 
+                    $user_id = get_current_user_id();
+                    $results = $wpdb->get_results("SELECT trackid FROM $table_name WHERE vendor_id = $data->ID AND user_id = $user_id");
+                   
+                    //print_r($large_image_url );
+                    $html .='<div class="vendor-detail-slider-section" xxstyle="background-image:url('.$large_image_url[0].')">
+                            
+                    <div class="vendor-col">
+                        <a href="'.get_permalink($data->ID).'"><img style="object-fit: contain; position: absolute; height:300px; left:0px;" src="'.$large_image_url[0].'"></a>
+                        <div class="vendor-fb-like">
+                            <button class="vendor-like thumbid-'.$data->ID.'" data-vendor="'.$data->ID.'" data-likes="'.$vendor_likes.'" data-user="'.$user_id.'">';
+                                
+                                if (count($results)> 0) {
+                                    $icon = '<i class="fas fa-thumbs-up"></i>';
+                                }  else {
+                                    $icon = '<i class="far fa-thumbs-up"></i>';
+                                }
+                                $html .= '<div class="likes-vendor-add-'.$data->ID.'">';
+                                        $initial_value = 0;
+                                        if(!empty($vendor_likes))  {
+                                            $html .= $vendor_likes; 
+                                        }  else  { 
+                                            $html .= $initial_value;
+                                        }
+                                $html .= ' '.$icon.'</div>';
+                            $html .= '</button>
+                        </div>
+                        <div class="ven-followers vendor-followers-'.$data->ID.'">
+                            <button class="vendor-follow" data-vendor="'.$data->ID.'" data-followers="'.$vendor_followers.'">';
+                                $initial_value = 0;
+                                if(!empty($vendor_followers))
+                                {
+                                $html .= '<p><i class="fas fa-users"></i> '.$vendor_followers.'</p>'; 
+                                }
+                                else
+                                { 
+                                $html .= '<p><i class="fas fa-users"></i> '.$initial_value.'</p>';
+                                }
+                                $html .= '</button>';
+                    $html .= '</div>
+                
+                    </div>
+                </div>';
+                } 
+            }
+    $html .='</div>';
+    return $html;
+}
+/**
+* Vendor and its detail  on Product Details
+*/
+add_shortcode('Vendor-Featured-Image-Round', 'vendor_image_round');
+function vendor_image_round(){
+    global $product;
+   // var_dump($product->get_id());  
+    if ( empty( $product->get_id() ) ) return '';  
+    $vendor_id = get_post_meta($product->get_id() , 'vendor_name' , true );
+    $image = get_the_post_thumbnail_url($vendor_id);
+    $large_image_url = wp_get_attachment_image_src( get_post_thumbnail_id($vendor_id), 'large');
+    $large_image_url = !empty($large_image_url) ? $large_image_url : '';  
+    $html ='<div class="vendor-profile-image">'; 
+    $html .='<a href="'.get_permalink($vendor_id).'"><img style="object-fit: contain; position: absolute; height:300px; left:0px;" src="'.$large_image_url[0].'"></a>';
+    $html .='</div>';
+    return $html;
+}
+
+/**
+* Vendor name excerpt and high  on Product Details
+*/
+add_shortcode('Vendor-Details-Prod', 'vendor_details_for_proddetails');
+function vendor_details_for_proddetails(){
+    global $product;
+   // var_dump($product->get_id());  
+    if ( empty( $product->get_id() ) ) return '';  
+    $vendor_id = get_post_meta($product->get_id() , 'vendor_name' , true );
+    $image = get_the_post_thumbnail_url($vendor_id);
+    $large_image_url = wp_get_attachment_image_src( get_post_thumbnail_id($vendor_id), 'large');
+    $large_image_url = !empty($large_image_url) ? $large_image_url : '';  
+    $vendor_name = get_the_title($vendor_id);
+    $vendor_followers = get_post_meta($vendor_id,'vendor_followers', true);
+    $user_id = get_current_user_id();
+    $vendor_likes = get_post_meta($vendor_id, 'vendor_like' , true); 
+    $html ='<div class="vendor-profile-details">'; 
+    $html .='<h5>'.$vendor_name.'</h5>';
+    $html .='<div class="vendorexcerpt">'. wp_strip_all_tags(get_the_excerpt($vendor_id)).'</div>';
+    $html .='<p><a href="'.get_permalink($vendor_id).'" class="vendorLink">Vendor Details</a></p>';
+    $html .='<div class="vendorexcerpt">';
+    $html .='<div class="vendorhighfive"><button class="vendor-like thumbid-'.$vendor_id.'" data-vendor="'.$vendor_id.'" data-likes="'.$vendor_likes.'" data-user="'.$user_id.'"><i class="fas fa-thumbs-up"></i></button> Give a High Five</div>';
+    $html .='<div class="vendorfollow"><button class="vendor-follow" data-vendor="'.$vendor_id.'" data-followers="'.$vendor_followers.'"><i class="fas fa-users"></i></button> Follow</div>';
+    $html .='</div>';
+    $html .='</div>';
+    return $html;
+}
+
+=======
+<?php
+
+/**
+* Vendor List Slide Shortcode In Homepage and Shop Page
+*/
+add_shortcode('Vendor-Listing', 'vendor_list_init');
+function vendor_list_init($atts){
+    $args = array(
+        'post_type'      => 'vendor',
+        'order' => 'ASC', 
+        'posts_per_page' => 4,          
+    );
+    $loop = get_posts($args);
+
+   $html = '<div class="vendor-list-section owl-carousel" id="vendor-slide-list-wrapper">';
+            if(!empty($loop)) 
+            {
+                foreach ($loop as $data) 
+                {
+                    $html .='<div class="vendor-slide-section">
+                                <img src="'.get_the_post_thumbnail_url($data->ID).'">
+                             </div>';
+                } 
+            }
+    $html .='</div>';
+    return $html;
+}
+
+
+
+/**
+* Starfish Project Listing Shortcode In Shop
+*/
+add_shortcode('StarfishProject-Vendor-Listing', 'starfish_vendor_list_init');
+function starfish_vendor_list_init(){
+   /* $args = array(
+        'post_type' => 'product',
+        'order' => 'ASC',
+        'meta_query' => array(
+           'meta_value' => array(
+                'key' => 'vendor_name', 
+                'value' => 232,
+    ))); */
+    return vendor_list_shortcode_init(array('vendor' => '232'));
+}
+
+
+/**
+* Yoobi Listing Shortcode In Shop
+*/
+add_shortcode('Yoobi-Vendor-Listing', 'yoobi_vendor_list_init');
+function yoobi_vendor_list_init(){
+    /*$args = array(
+        'post_type' => 'product',
+        'order' => 'ASC',
+        'meta_query' => array(
+           'meta_value' => array(
+                'key' => 'vendor_name', 
+                'value' => 234,
+    ))); */
+    return vendor_list_shortcode_init(array('vendor' => '234'));
+}
+
+
+/**
+* Penpillar Listing Shortcode In Shop
+*/
+add_shortcode('Penpillar-Vendor-Listing', 'penpillar_vendor_list_init');
+function penpillar_vendor_list_init(){
+    /* $args = array(
+        'post_type' => 'product',
+        'order' => 'ASC',
+        'meta_query' => array(
+           'meta_value' => array(
+                'key' => 'vendor_name', 
+                'value' => 236,
+    )));
+   */
+    return vendor_list_shortcode_init(array('vendor' => '236'));
+}
+
+
+
+/**
+* Hand in Hand Listing Shortcode In Shop
+*/
+add_shortcode('HandinHand-Vendor-Listing', 'handinhand_vendor_list_init');
+function handinhand_vendor_list_init(){
+   /* $args = array(
+        'post_type' => 'product',
+        'order' => 'ASC',
+        'meta_query' => array(
+           'meta_value' => array(
+                'key' => 'vendor_name', 
+                'value' => 238,
+    ))); */
+    return vendor_list_shortcode_init(array('vendor' => '238'));
+}
+
+
+add_shortcode('Vendor-Listing-byID', 'vendor_list_shortcode_init');
+function vendor_list_shortcode_init($atts){
+    global $wpdb;
+    $html = '';
+    if (!empty($atts['vendor'])) {
+        $args = array(
+            'post_type' => 'product',
+            'order' => 'ASC',
+            'posts_per_page' => -1,    
+            'meta_query' => array(
+                'meta_value' => array(
+                    'key' => 'vendor_name', 
+                    'value' => $atts['vendor'],
+                )
+            )
+        );
+    } else {
+        $args = array(
+            'post_type' => 'product',
+            'order' => 'ASC'
+        );
+    }
+    $loop = get_posts($args);
+    $table_name = $wpdb->prefix . "likes_tracking";
+    $html = '<div class="vendor-list-products-section" id="products-wrapper"><div class="container"><div class="row">';
+
+            if(!empty($loop)) 
+            {
+                foreach ($loop as $value) 
+                {
+                    
+                    $image = wp_get_attachment_image_src( get_post_thumbnail_id( $value->ID ), 'single-post-thumbnail' );
+                    $product = wc_get_product( $value->ID );
+                    $symbol = get_woocommerce_currency_symbol();
+                    $vendor_id = get_post_meta($value->ID, 'vendor_name' , true );
+                    $vendor_name = get_the_title($vendor_id); 
+                    $product_likes = get_post_meta($value->ID, 'like' , true); 
+                    $user_id = get_current_user_id();
+                    $pro_id = $value->ID;
+                    $results = $wpdb->get_results("SELECT trackid FROM $table_name WHERE product_id = $pro_id AND user_id = $user_id");
+                    $v_image = !empty($image[0]) ? $image[0] : VENDOR_PROD_PLACEHOLDER;
+                    $html .= '<div class="col-sm-3">
+                            <div class="vendorProduct_wrap">
+                                <div class="vendor-fb-like">
+                                    <button class="product-like thumbid-'.$value->ID.'" data-product="'.$value->ID.'" data-likes="'.$product_likes.'" data-user="'.$user_id.'">';
+                                        if (count($results)> 0) {
+                                            $icon = '<i class="fas fa-thumbs-up"></i>';
+                                        }  else {
+                                            $icon = '<i class="far fa-thumbs-up"></i>';
+                                        }
+                                    $html .= '<p class="likes-add-'.$value->ID.'">';
+                                            $initial_value = 0;
+                                            if(!empty($product_likes))  {
+                                                $html .= $product_likes; 
+                                            }  else  { 
+                                                $html .= $initial_value;
+                                            }
+                                    $html .= ' '.$icon.' </p>';
+                                    $html .= '</button>
+                                </div>
+                                <img src="'.$v_image.'">
+                                <p class="vendor-name">'.$vendor_name.'</p>
+                                <a href="'.get_permalink($value->ID).'" class="shop-product-title">'.$value->post_title.'</a>';
+                                if(!empty($product->get_regular_price())){ 
+                                    $html .= '<p class="shop-product-price">'.$symbol.$product->get_regular_price().'</p>';
+                                }
+                                $html .= '</div>
+                        </div>';
+                        // echo "<br><br>";
+                        // print_r($html);
+                } 
+            }
+    $html .= '</div></div></div>';
+ //print_r($html);
+    return $html;
+}
+
+
+/**
+* Vendor List in About the vendors page
+*/
+add_shortcode('Vendors-List-by-Impact', 'vendors_list_init');
+function vendors_list_init(){
+    $args = array(
+        'post_type'      => 'vendor',
+        'order' => 'DESC', 
+        'posts_per_page' => -1,
+        'meta_query'     =>
+        array(
+            'key'     => 'vendor_impacts',
+        ),       
+    );
+    $loop = get_posts($args);
+
+    $html = '<div class="vendors-list">
+            ';
+            if(!empty($loop)) 
+            {
+                foreach ($loop as $data) 
+                {  
+                    $impacts = get_post_meta( $data->ID, 'vendor_impacts', true );
+                    $html .= '<div class="product-content">
+                    			<div class="container">
+                    				<div class="row">
+                    					<div class="col-sm-3">
+                                			<h4><a href="'.get_permalink($data->ID).'">'.$data->post_title.'</a></h4>
+                             			</div>
+                             			<div class="col-sm-9">
+                             				<div class="row">';
+							                    if(!empty($impacts))
+							                    {
+							                        foreach ($impacts as $key => $value) 
+							                        {
+							                           $html .= '<div class="col-sm-4">
+							                           				<h4>'.get_the_title($value).'</h4>
+							                                        <p>'.get_the_excerpt($value).'</p>
+							                                    </div>';
+							                        } 
+							                    }
+                    							$html .= '
+                    						</div>';
+                    						$html .= '<a class="vendorLink" href="'.get_permalink($data->ID).'">Read More</a>';
+                    		  $html .= '</div>
+                    				</div>
+                    			</div>
+                    		</div>';
+                }
+            }
+    $html .='
+            </div>';
+    return $html;
+}
+
+/**
+* Vendor and its detail  Listing Slider Shortcode In Homepage
+*/
+add_shortcode('Vendor-Detail-Listing', 'vendor_detail_list_init');
+function vendor_detail_list_init(){
+    global $wpdb;
+    $args = array(
+        'post_type'      => 'vendor',
+        'order' => 'ASC', 
+        'posts_per_page' => -1,          
+    );
+    $loop = get_posts($args);
+    $table_name = $wpdb->prefix . "vendor_likes";   
+
+   $html = '<div class="vendor-detail-list-section owl-carousel" id="vendor-detail-slide-list-wrapper">';
+            if(!empty($loop)) 
+            {
+                foreach ($loop as $data) 
+                {   
+                    $details = get_field('v_vendor_details', $data->ID);
+                    $vendor_profile_image = get_field('v_profile_pic', $data->ID);
+                    $vendor_followers = get_post_meta($data->ID,'vendor_followers', true);
+                    $large_image_url = wp_get_attachment_image_src( get_post_thumbnail_id($data->ID), 'large');
+                    $large_image_url = !empty($large_image_url) ? $large_image_url : '';
+                    $vendor_likes = get_post_meta($data->ID, 'vendor_like' , true); 
+                    $user_id = get_current_user_id();
+                    $results = $wpdb->get_results("SELECT trackid FROM $table_name WHERE vendor_id = $data->ID AND user_id = $user_id");
+                   
+                    $html .='<div class="vendor-detail-slide-section">
+                                <div class="vendor-first-col">
+                                    <img src="'.$large_image_url[0].'">                                     
+                                    <div class="vendor-fb-like">
+                                        <button class="vendor-like thumbid-'.$data->ID.'" data-vendor="'.$data->ID.'" data-likes="'.$vendor_likes.'" data-user="'.$user_id.'">';
+                                            if (count($results)> 0) {
+                                                $icon = '<i class="fas fa-thumbs-up"></i>';
+                                            }  else {
+                                                $icon = '<i class="far fa-thumbs-up"></i>';
+                                            }
+                                        $html .= '<div class="likes-vendor-add-'.$data->ID.'">';
+                                                $initial_value = 0;
+                                                if(!empty($vendor_likes))  {
+                                                    $html .= $vendor_likes; 
+                                                }  else  { 
+                                                    $html .= $initial_value;
+                                                }
+                                        $html .= ' '.$icon.'</div>';
+                                        $html .= '</button>
+                                    </div>                                  
+                                    <div class="ven-followers vendor-followers-'.$data->ID.'">
+                                        <button class="vendor-follow" data-vendor="'.$data->ID.'" data-followers="'.$vendor_followers.'">';
+                                          $initial_value = 0;
+                                          if(!empty($vendor_followers))
+                                          {
+                                            $html .= '<p><i class="fas fa-users"></i> '.$vendor_followers.'</p>'; 
+                                          }
+                                          else
+                                          { 
+                                            $html .= '<p><i class="fas fa-users"></i> '.$initial_value.'</p>';
+                                          }
+                                          $html .= '</button>';
+                         $html .= '</div>
+                                </div>
+
+                                <div class="vendor-second-col">';
+                                    if( !empty( $details ) ):
+                                        $html .=  '<p>'.$details.'</p>';
+                                    endif; 
+                                    $html .='<a href="'.get_the_permalink($data->ID).'">Learn More</a>
+                                </div>
+
+                                <div class="vendor-third-col">';
+                                    if( !empty( $vendor_profile_image ) ):
+                                        $html .='<img src="'.esc_url($vendor_profile_image['url']).'"/>';
+                                    endif; 
+                       $html .= '</div>
+                         </div>';
+                } 
+            }
+    $html .='</div>';
+    return $html;
+}
+/**
+* Vendor List in Category page - Shop Single
+*/
+add_shortcode('List-Of-Vendors', 'list_of_vendors_init');
+function list_of_vendors_init(){
+    $args = array(
+        'post_type'      => 'vendor',
+        'order' => 'DESC', 
+        'posts_per_page' => -1,          
+    );
+    $loop = get_posts($args);
+
+    $category = get_queried_object();
+    $cat_slug = $category->slug;
+    $cat_id = $category->term_id;
+
+   $html = '<div class="sidebar-list-section">
+            <ul>';
+            if(!empty($loop)) 
+            {
+                foreach ($loop as $data) 
+                {   
+                    //$token = $cat_slug.','.$data->ID;
+                    $vendor_token = $data->ID;
+                    $url = home_url( '/' ).'vendor/'.$data->post_name;
+                    //$html .='<li><a href="'.home_url( '/' ).'product-category/'.$cat_slug.'?vendor_token='.$vendor_token.'">'.$data->post_title.'</a></li>';
+                    $html .='<li><a href="'.$url.'">'.$data->post_title.'</a></li>';
+                } 
+            }
+    $html .='</ul>
+            </div>';
+    return $html;
+}
+
+
+add_shortcode('Vendors-List-Boxed', 'vendors_list_box_init');
+function vendors_list_box_init(){
+    global $wpdb;
+    $args = array(
+        'post_type'      => 'vendor',
+        'order' => 'ASC', 
+        'posts_per_page' => -1,          
+    );
+    $loop = get_posts($args);
+    $table_name = $wpdb->prefix . "vendor_likes";
+    $html = '<div class="vendor-list-products-section" id="products-wrapper"><div class="container"><div class="row">';
+            if(!empty($loop)) 
+            {
+                foreach ($loop as $value) 
+                {
+                    $vendor_likes = get_post_meta($value->ID, 'vendor_like' , true); 
+                    $user_id = get_current_user_id();
+                    $vendor_id = $value->ID;
+                    $vendor_name = get_the_title($vendor_id); 
+                    $results = $wpdb->get_results("SELECT trackid FROM $table_name WHERE vendor_id = $vendor_id AND user_id = $user_id");
+                    
+                    $html .='<div class="col-sm-3">
+                            <div class="vendor_wrap">
+                                <div class="vendor-fb-like">
+                                    <button class="vendor-like thumbid-'.$value->ID.'" data-vendor="'.$value->ID.'" data-likes="'.$vendor_likes.'" data-user="'.$user_id.'">';
+                                        if (count($results)> 0) {
+                                            $icon = '<i class="fas fa-thumbs-up"></i>';
+                                        }  else {
+                                            $icon = '<i class="far fa-thumbs-up"></i>';
+                                        }
+                                    $html .= '<div class="likes-vendor-add-'.$value->ID.'">';
+                                            $initial_value = 0;
+                                            if(!empty($vendor_likes))  {
+                                                $html .= $vendor_likes; 
+                                            }  else  { 
+                                                $html .= $initial_value;
+                                            }
+                                    $html .= ' '.$icon.'</div>';
+                                    $html .= '</button>
+                                </div>
+                                <img src="'.get_the_post_thumbnail_url($value->ID).'">
+                                <p class="vendor-name">'.$vendor_name.'</p>
+                                <br>
+                               <a class="vendorLink" href="'.get_the_permalink($value->ID).'">Learn More</a>
+                             </div></div>';
+                } 
+            }
+    $html .='</div></div></div>';
+    return $html;
+}
+/**
+* Vendor and its detail  Listing Slider Shortcode In Homepage
+*/
+add_shortcode('Vendor-Detail-slider-Listing', 'vendor_detail_slider_list_init');
+function vendor_detail_slider_list_init(){
+    global $wpdb;
+    $args = array(
+        'post_type'      => 'vendor',
+        'order' => 'ASC', 
+        'posts_per_page' => -1,          
+    );
+    $loop = get_posts($args);
+    $table_name = $wpdb->prefix . "vendor_likes";
+   $html = '<div class="vendor-detail-slider-list-section owl-carousel" id="vendor-detail-slider-list-wrapper">';
+            if(!empty($loop)) 
+            {
+                foreach ($loop as $data) 
+                {   
+                    //$details = get_field('v_vendor_details', $data->ID);
+                    //$vendor_profile_image = get_field('v_profile_pic', $data->ID);
+                    $vendor_followers = get_post_meta($data->ID,'vendor_followers', true);
+                    $image = get_the_post_thumbnail_url($data->ID);
+                    $large_image_url = wp_get_attachment_image_src( get_post_thumbnail_id($data->ID), 'large');
+                    $large_image_url = !empty($large_image_url) ? $large_image_url : '';
+                    $vendor_likes = get_post_meta($data->ID, 'vendor_like' , true); 
+                    $user_id = get_current_user_id();
+                    $results = $wpdb->get_results("SELECT trackid FROM $table_name WHERE vendor_id = $data->ID AND user_id = $user_id");
+                   
+                    //print_r($large_image_url );
+                    $html .='<div class="vendor-detail-slider-section" xxstyle="background-image:url('.$large_image_url[0].')">
+                            
+                    <div class="vendor-col">
+                        <a href="'.get_permalink($data->ID).'"><img style="object-fit: contain; position: absolute; height:300px; left:0px;" src="'.$large_image_url[0].'"></a>
+                        <div class="vendor-fb-like">
+                            <button class="vendor-like thumbid-'.$data->ID.'" data-vendor="'.$data->ID.'" data-likes="'.$vendor_likes.'" data-user="'.$user_id.'">';
+                                
+                                if (count($results)> 0) {
+                                    $icon = '<i class="fas fa-thumbs-up"></i>';
+                                }  else {
+                                    $icon = '<i class="far fa-thumbs-up"></i>';
+                                }
+                                $html .= '<div class="likes-vendor-add-'.$data->ID.'">';
+                                        $initial_value = 0;
+                                        if(!empty($vendor_likes))  {
+                                            $html .= $vendor_likes; 
+                                        }  else  { 
+                                            $html .= $initial_value;
+                                        }
+                                $html .= ' '.$icon.'</div>';
+                            $html .= '</button>
+                        </div>
+                        <div class="ven-followers vendor-followers-'.$data->ID.'">
+                            <button class="vendor-follow" data-vendor="'.$data->ID.'" data-followers="'.$vendor_followers.'">';
+                                $initial_value = 0;
+                                if(!empty($vendor_followers))
+                                {
+                                $html .= '<p><i class="fas fa-users"></i> '.$vendor_followers.'</p>'; 
+                                }
+                                else
+                                { 
+                                $html .= '<p><i class="fas fa-users"></i> '.$initial_value.'</p>';
+                                }
+                                $html .= '</button>';
+                    $html .= '</div>
+                
+                    </div>
+                </div>';
+                } 
+            }
+    $html .='</div>';
+    return $html;
+}
+/**
+* Vendor and its detail  on Product Details
+*/
+add_shortcode('Vendor-Featured-Image-Round', 'vendor_image_round');
+function vendor_image_round(){
+    global $product;
+   // var_dump($product->get_id());  
+    if ( empty( $product->get_id() ) ) return '';  
+    $vendor_id = get_post_meta($product->get_id() , 'vendor_name' , true );
+    $image = get_the_post_thumbnail_url($vendor_id);
+    $large_image_url = wp_get_attachment_image_src( get_post_thumbnail_id($vendor_id), 'large');
+    $large_image_url = !empty($large_image_url) ? $large_image_url : '';  
+    $html ='<div class="vendor-profile-image">'; 
+    $html .='<a href="'.get_permalink($vendor_id).'"><img style="object-fit: contain; position: absolute; height:300px; left:0px;" src="'.$large_image_url[0].'"></a>';
+    $html .='</div>';
+    return $html;
+}
+
+/**
+* Vendor name excerpt and high  on Product Details
+*/
+add_shortcode('Vendor-Details-Prod', 'vendor_details_for_proddetails');
+function vendor_details_for_proddetails(){
+    global $product;
+   // var_dump($product->get_id());  
+    if ( empty( $product->get_id() ) ) return '';  
+    $vendor_id = get_post_meta($product->get_id() , 'vendor_name' , true );
+    $image = get_the_post_thumbnail_url($vendor_id);
+    $large_image_url = wp_get_attachment_image_src( get_post_thumbnail_id($vendor_id), 'large');
+    $large_image_url = !empty($large_image_url) ? $large_image_url : '';  
+    $vendor_name = get_the_title($vendor_id);
+    $vendor_followers = get_post_meta($vendor_id,'vendor_followers', true);
+    $user_id = get_current_user_id();
+    $vendor_likes = get_post_meta($vendor_id, 'vendor_like' , true); 
+    $html ='<div class="vendor-profile-details">'; 
+    $html .='<h5>'.$vendor_name.'</h5>';
+    $html .='<div class="vendorexcerpt">'. wp_strip_all_tags(get_the_excerpt($vendor_id)).'</div>';
+    $html .='<p><a href="'.get_permalink($vendor_id).'" class="vendorLink">Vendor Details</a></p>';
+    $html .='<div class="vendorexcerpt">';
+    $html .='<div class="vendorhighfive"><button class="vendor-like thumbid-'.$vendor_id.'" data-vendor="'.$vendor_id.'" data-likes="'.$vendor_likes.'" data-user="'.$user_id.'"><i class="fas fa-thumbs-up"></i></button> Give a High Five</div>';
+    $html .='<div class="vendorfollow"><button class="vendor-follow" data-vendor="'.$vendor_id.'" data-followers="'.$vendor_followers.'"><i class="fas fa-users"></i></button> Follow</div>';
+    $html .='</div>';
+    $html .='</div>';
+    return $html;
+}
+
+>>>>>>> b7d2a5e0b20a061712f60876241d65e2337009ef
+>>>>>>> db0c04c485b21b4a3a28ccdf0f55ac476237dffe
+?>

@@ -1,0 +1,117 @@
+<<<<<<< HEAD
+jQuery(document).ready(function(){
+	
+	jQuery('#vendor_list').change(function(){
+
+	    var vendor = jQuery(this).val();
+	    var post_id = location.search.slice(1).split("&")[0].split("=")[1];
+	    
+	    console.log(post_id);
+
+	    jQuery.ajax({
+	    	type : "post",
+			dataType : "json",
+			url : myAjax.ajaxurl,
+			data : {action: "get_vendor_impacts_ajax", vendor_id : vendor, postId: post_id},
+	    
+	        success: function(res){
+	            console.log(res);
+	            if(res.success == 1){
+	            	console.log(res.impacts);
+	            	// var impact = '';
+	            	// var checkHtml = '';
+	            	// for (var i = 0; i < res.impacts.length; i++) {
+	            	// 	checkHtml += '<p><input  type="checkbox" name="multval[]" value="'+res.impacts[i].imp_id+'" /> '+res.impacts[i].title+'</p>';
+	            	// }
+
+	            	jQuery('.impacts_list').html(res.impacts);	
+	            }
+	            else{
+	            	jQuery('.impacts_list').html('');
+	            }
+	            
+	        }
+	    });
+
+	});
+})
+
+=======
+<<<<<<< HEAD
+jQuery(document).ready(function(){
+	
+	jQuery('#vendor_list').change(function(){
+
+	    var vendor = jQuery(this).val();
+	    var post_id = location.search.slice(1).split("&")[0].split("=")[1];
+	    
+	    console.log(post_id);
+
+	    jQuery.ajax({
+	    	type : "post",
+			dataType : "json",
+			url : myAjax.ajaxurl,
+			data : {action: "get_vendor_impacts_ajax", vendor_id : vendor, postId: post_id},
+	    
+	        success: function(res){
+	            console.log(res);
+	            if(res.success == 1){
+	            	console.log(res.impacts);
+	            	// var impact = '';
+	            	// var checkHtml = '';
+	            	// for (var i = 0; i < res.impacts.length; i++) {
+	            	// 	checkHtml += '<p><input  type="checkbox" name="multval[]" value="'+res.impacts[i].imp_id+'" /> '+res.impacts[i].title+'</p>';
+	            	// }
+
+	            	jQuery('.impacts_list').html(res.impacts);	
+	            }
+	            else{
+	            	jQuery('.impacts_list').html('');
+	            }
+	            
+	        }
+	    });
+
+	});
+})
+
+=======
+jQuery(document).ready(function(){
+	
+	jQuery('#vendor_list').change(function(){
+
+	    var vendor = jQuery(this).val();
+	    var post_id = location.search.slice(1).split("&")[0].split("=")[1];
+	    
+	    console.log(post_id);
+
+	    jQuery.ajax({
+	    	type : "post",
+			dataType : "json",
+			url : myAjax.ajaxurl,
+			data : {action: "get_vendor_impacts_ajax", vendor_id : vendor, postId: post_id},
+	    
+	        success: function(res){
+	            console.log(res);
+	            if(res.success == 1){
+	            	console.log(res.impacts);
+	            	// var impact = '';
+	            	// var checkHtml = '';
+	            	// for (var i = 0; i < res.impacts.length; i++) {
+	            	// 	checkHtml += '<p><input  type="checkbox" name="multval[]" value="'+res.impacts[i].imp_id+'" /> '+res.impacts[i].title+'</p>';
+	            	// }
+
+	            	jQuery('.impacts_list').html(res.impacts);	
+	            }
+	            else{
+	            	jQuery('.impacts_list').html('');
+	            }
+	            
+	        }
+	    });
+
+	});
+})
+
+>>>>>>> b7d2a5e0b20a061712f60876241d65e2337009ef
+>>>>>>> db0c04c485b21b4a3a28ccdf0f55ac476237dffe
